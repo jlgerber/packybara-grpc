@@ -1,0 +1,31 @@
+syntax = "proto2";
+package packybara;
+
+service Packybara {
+  rpc GetVersionPin(VersionPinQueryRequest) returns (VersionPinQueryReply) {}
+}
+
+message VersionPinQueryRequest {
+  required string package = 1;
+  optional string level = 2;
+  optional string role = 3;
+  optional string platform = 4;
+  optional string site = 5;
+}
+
+message Coords {
+  required string level = 1;
+  required string role = 2;
+  required string platform = 3;
+  required string site = 4;
+}
+
+// From packybara::db::find::versionpins.rs
+message FindVersionPinsResult {
+  required int64 versionpin_id = 1;
+  required string distribution = 2;
+  required Coords coords = 3;
+  repeated string withs = 4;
+}
+
+message VersionPinQueryReply { repeated FindVersionPinsResult rows = 1; }
