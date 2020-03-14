@@ -2,7 +2,7 @@ syntax = "proto2";
 package packybara;
 
 service Packybara {
-  rpc GetVersionPin(VersionPinQueryRequest) returns (VersionPinQueryReply) {}
+  rpc GetVersionPinGr(VersionPinQueryRequest) returns (VersionPinQueryReply) {}
 }
 
 message VersionPinQueryRequest {

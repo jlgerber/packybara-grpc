@@ -18,6 +18,19 @@ impl PackybaraService {
         Self { client }
     }
     // TODO:: Add configuration as run argument
+    /// Run the server as a service.
+    ///
+    /// # Examples
+    /// ```
+    /// use tokio;
+    /// use packybara_grpc::PackybaraService;
+    ///
+    /// #[tokio::main]
+    /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    ///     PackybaraService::run().await?;
+    ///     Ok(())
+    /// }
+    /// ```
     pub async fn run() -> Result<(), Box<dyn std::error::Error>> {
         let (client, connection) = tokio_postgres::connect(
             "host=127.0.0.1 user=postgres  dbname=packrat password=example port=5432",
@@ -46,7 +59,7 @@ impl PackybaraService {
 
 #[tonic::async_trait]
 impl Packybara for PackybaraService {
-    async fn get_version_pin(
+    async fn get_version_pin_gr(
         &self,
         request: Request<VersionPinQueryRequest>, // Accept request of type HelloRequest
     ) -> Result<Response<VersionPinQueryReply>, Status> {

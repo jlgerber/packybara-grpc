@@ -1,8 +1,6 @@
 use tokio;
-use tokio_postgres::NoTls;
-use tonic::transport::Server;
 
-use packybara_grpc::{PackybaraServer, PackybaraService};
+use packybara_grpc::PackybaraService;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
