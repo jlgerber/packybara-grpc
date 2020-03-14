@@ -21,11 +21,9 @@ message Coords {
 }
 
 // From packybara::db::find::versionpins.rs
-message FindVersionPinsResult {
+message VersionPinQueryReply {
   required int64 versionpin_id = 1;
   required string distribution = 2;
   required Coords coords = 3;
   repeated string withs = 4;
 }
-
-message VersionPinQueryReply { repeated FindVersionPinsResult rows = 1; }
