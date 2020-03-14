@@ -1,9 +1,4 @@
-use pb::packybara_client::PackybaraClient;
-use pb::VersionPinQueryRequest;
-
-pub mod pb {
-    tonic::include_proto!("packybara");
-}
+use packybara_grpc::{PackybaraClient, VersionPinQueryRequest};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
