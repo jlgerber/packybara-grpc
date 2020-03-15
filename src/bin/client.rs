@@ -107,7 +107,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         //         cmd::export::export(client, cmd).await?;
         //     }
         // },
-        _ => println!("Not implemented"),
+        //_ => println!("Not implemented"),
     }
 
     Ok(())
