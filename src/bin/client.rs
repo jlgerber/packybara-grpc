@@ -21,7 +21,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             } => {
                 let response = client
                     .get_version_pin(
-                        pbclient::GetVersionPinOptions::new(package)
+                        pbclient::get_versionpin::Options::new(package)
                             .level_opt(level)
                             .role_opt(role)
                             .platform_opt(platform)
