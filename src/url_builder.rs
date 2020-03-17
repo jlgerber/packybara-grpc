@@ -1,7 +1,14 @@
-use std::fmt;
-use std::net::{Ipv4Addr, Ipv6Addr};
-use url::Url;
+//! Utilites for building urls.
+//!
 
+pub use crate::url::*;
+use std::fmt;
+use std::net::SocketAddr;
+use std::net::ToSocketAddrs;
+use std::net::{Ipv4Addr, Ipv6Addr};
+pub use url::Host as UrlHost;
+use url::Url;
+pub use url::{form_urlencoded, Origin, ParseError, ParseOptions, PathSegmentsMut, UrlQuery};
 /// The scheme may either be http or https
 #[derive(Debug, PartialEq, Eq)]
 pub enum Scheme {
@@ -89,6 +96,10 @@ impl Fqdn {
     pub fn as_str(&self) -> &str {
         &self.name
     }
+
+    pub fn to_socket_addr(&self) -> std::io::Result<std::vec::IntoIter<SocketAddr>> {
+        self.as_str().to_socket_addrs()
+    }
 }
 
 /// Different expressions of a host, including raw ip addresses, fully qualified domain name, and localhost
@@ -130,6 +141,7 @@ impl Default for UrlBuilder {
         }
     }
 }
+
 impl UrlBuilder {
     /// New up a UrlBuilder instance
     pub fn new() -> Self {
@@ -261,8 +273,8 @@ impl UrlBuilder {
         self
     }
 
-    pub fn build(self) -> Url {
-        Url::parse(&format!(
+    pub fn build(self) -> GrpcUrl {
+        GrpcUrl::parse(&format!(
             "{}://{}:{}/{}",
             self.scheme.as_ref().unwrap(), //.unwrap_or(&Scheme::Http),
             self.host.as_ref().unwrap(),   //.unwrap_or(&Host::Localhost),
@@ -352,6 +364,13 @@ mod tests {
 
     #[test]
     fn can_build_url_from_default_8080_port() {
+        let url = UrlBuilder::new().port(8080).build();
+        let expect = "http://localhost:8080/";
+        assert_eq!(url.as_str(), expect);
+    }
+
+    #[test]
+    fn can_extract_ip_from_name() {
         let url = UrlBuilder::new().port(8080).build();
         let expect = "http://localhost:8080/";
         assert_eq!(url.as_str(), expect);
