@@ -1,13 +1,17 @@
 use packybara_grpc::client as pbclient;
 mod client_cli;
 use client_cli::*;
+use packybara_grpc::url_builder;
 use structopt::StructOpt;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opt = Pb::from_args();
-
-    let mut client = pbclient::Client::new("http://[::1]:50051").await?;
+    let url = url_builder::UrlBuilder::new()
+        .host(url_builder::Host::Localhost)
+        .port(50051)
+        .build(); //"http://[::1]:50051"
+    let mut client = pbclient::Client::new(url).await?;
     let Pb { crud, .. } = opt;
     match crud {
         PbCrud::Find { cmd } => match cmd {
