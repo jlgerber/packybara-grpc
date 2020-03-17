@@ -1,6 +1,9 @@
-use crate::{Coords, PackybaraClient, VersionPinQueryReply, VersionPinQueryRequest};
+use crate::{
+    url as grpcurl, Coords, PackybaraClient, VersionPinQueryReply, VersionPinQueryRequest,
+};
 use packybara::db::find::versionpins::FindVersionPinsRow;
-use tonic::transport::Channel;
+use std::convert::TryFrom;
+use tonic::transport::{Channel, Endpoint};
 
 // this has some implications for applications that want to communicate
 // in multiple channels. If this becomes a requirement, we will have to
@@ -11,11 +14,10 @@ pub struct Client {
 
 impl Client {
     /// create a new client instance , given a url
-    pub async fn new<I>(url: I) -> Result<Self, Box<dyn std::error::Error>>
-    where
-        I: Into<String>,
-    {
-        let client = PackybaraClient::connect(url.into()).await?;
+    pub async fn new(url: grpcurl::GrpcUrl) -> Result<Self, Box<dyn std::error::Error>> {
+        let url = url.as_str().to_string();
+        let endpoint = Endpoint::try_from(url)?;
+        let client = PackybaraClient::connect(endpoint).await?;
         Ok(Client { client })
     }
     /// Retrieve versionpin from server, given GetVersionPinOptions instance
