@@ -30,9 +30,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // PbFind::Sites { .. } => {
             //     cmd::all_sites::find(client, cmd).await?;
             // }
-            // PbFind::Levels { .. } => {
-            //     cmd::all_levels::find(client, cmd).await?;
-            // }
+            PbFind::Levels { .. } => {
+                cmd::levels::find(client, cmd).await?;
+            }
             // PbFind::Pins { .. } => {
             //     cmd::pins::find(client, cmd).await?;
             // }

@@ -6,6 +6,7 @@ service Packybara {
   rpc GetVersionPins(VersionPinsQueryRequest) returns (VersionPinsQueryReply) {}
   rpc GetVersionPinWiths(VersionPinWithsQueryRequest)
       returns (VersionPinWithsQueryReply) {}
+  rpc GetLevels(LevelsQueryRequest) returns (LevelsQueryReply) {}
 }
 
 // GET VERSION PIN
@@ -74,3 +75,19 @@ message VersionPinWithsQueryRow {
 message VersionPinWithsQueryReply {
   repeated VersionPinWithsQueryRow withs = 1;
 }
+//------------------------------------
+// Levels
+
+message LevelsQueryRequest {
+  optional string level = 1;
+  optional string show = 2;
+  optional uint32 depth = 3;
+  optional string order_by = 4;
+}
+
+message LevelsQueryRow {
+  required string level = 1;
+  required string show = 2;
+}
+
+message LevelsQueryReply { repeated LevelsQueryRow levels = 1; }

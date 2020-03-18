@@ -1,6 +1,7 @@
 use log;
 use packybara::coords::Coords as PCoords;
 use packybara::db::find::versionpins::FindVersionPinsRow;
+use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
 use packybara::db::traits::*;
@@ -13,11 +14,13 @@ use tonic::transport::Server;
 use tonic::{Code, Request, Response, Status};
 
 use crate::{
-    url::GrpcUrl, Coords, Packybara, PackybaraServer, VersionPinQueryReply, VersionPinQueryRequest,
-    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
-    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    url::GrpcUrl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, Packybara,
+    PackybaraServer, VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
+    VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
+    VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 
+mod get_levels;
 mod get_version_pin;
 mod get_version_pin_withs;
 mod get_version_pins;
@@ -93,6 +96,13 @@ impl Packybara for PackybaraService {
         request: Request<VersionPinWithsQueryRequest>,
     ) -> Result<Response<VersionPinWithsQueryReply>, Status> {
         get_version_pin_withs::get_version_pin_withs(&self, request).await
+        //Err(Status::new(Code::Internal, "not implemented"))
+    }
+    async fn get_levels(
+        &self,
+        request: Request<LevelsQueryRequest>,
+    ) -> Result<Response<LevelsQueryReply>, Status> {
+        get_levels::get_levels(&self, request).await
         //Err(Status::new(Code::Internal, "not implemented"))
     }
 }

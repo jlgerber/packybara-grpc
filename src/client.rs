@@ -1,11 +1,14 @@
 use crate::{
-    url as grpcurl, Coords, PackybaraClient, VersionPinQueryReply, VersionPinQueryRequest,
-    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
-    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    url as grpcurl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, PackybaraClient,
+    VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
+    VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
+    VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 use packybara::db::find::versionpins::FindVersionPinsRow;
+use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
+
 use std::convert::TryFrom;
 use tonic::transport::{Channel, Endpoint};
 
@@ -176,6 +179,36 @@ impl Client {
             .collect::<Vec<FindAllWithsRow>>();
         Ok(withs)
         //Err("problem")
+    }
+
+    pub async fn get_levels(
+        &mut self,
+        options: get_levels::Options,
+    ) -> Result<Vec<FindAllLevelsRow>, Box<dyn std::error::Error>> {
+        let get_levels::Options {
+            level,
+            show,
+            depth,
+            order_by,
+        } = options;
+        let request = tonic::Request::new(LevelsQueryRequest {
+            level,
+            show,
+            depth: depth.map(|x| x as u32),
+            order_by,
+        });
+        let response = self.client.get_levels(request).await?;
+        let LevelsQueryReply { levels } = response.into_inner();
+
+        let results = levels
+            .into_iter()
+            .map(|level| {
+                let LevelsQueryRow { level, show } = level;
+                FindAllLevelsRow::from_parts(&level, &show)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
     }
 }
 
@@ -429,6 +462,56 @@ pub mod get_versionpins {
 
         pub fn order_direction_opt(mut self, order_dir: Option<String>) -> Self {
             self.order_direction = order_dir;
+            self
+        }
+    }
+}
+
+pub mod get_levels {
+    /// Encapsulate the query parameters
+    pub struct Options {
+        pub level: Option<String>,
+        pub show: Option<String>,
+        pub depth: Option<u8>,
+        pub order_by: Option<String>,
+    }
+
+    impl Options {
+        /// New up an instance of VetVersionPinOptions given a package name
+        ///
+        /// # Arguments
+        ///
+        /// * `package` - the name of the package
+        ///
+        /// # Returns
+        ///
+        /// * GetVersionPinOptions instance
+        pub fn new() -> Self {
+            Self {
+                level: None,
+                show: None,
+                depth: None,
+                order_by: None,
+            }
+        }
+
+        pub fn level_opt(mut self, level: Option<String>) -> Self {
+            self.level = level;
+            self
+        }
+
+        pub fn show_opt(mut self, show: Option<String>) -> Self {
+            self.show = show;
+            self
+        }
+
+        pub fn depth_opt(mut self, depth: Option<u8>) -> Self {
+            self.depth = depth;
+            self
+        }
+
+        pub fn order_by_opt(mut self, order_by: Option<String>) -> Self {
+            self.order_by = order_by;
             self
         }
     }
