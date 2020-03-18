@@ -879,8 +879,10 @@ dependencies = [
 name = "packybara-grpc"
 version = "0.3.0"
 dependencies = [
+ "log",
  "packybara",
  "prost",
+ "snafu",
  "structopt",
  "tokio",
  "tokio-postgres",

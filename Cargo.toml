@@ -22,6 +22,8 @@ tokio-postgres = "0.5.3"
 packybara = {git= "https://github.com/jlgerber/packybara", tag="async_v0.55.0"}
 structopt = "0.3.11"
 url = "2.1.1"
+log = "0.4.8"
+snafu = "0.6.2"
 
 [build-dependencies]
 tonic-build = "0.1.1"

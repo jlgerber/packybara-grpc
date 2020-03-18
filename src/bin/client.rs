@@ -34,45 +34,75 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .await?;
                 println!("RESPONSE={:#?}", response);
             }
-            _ => println!("Not Implemented"), //     PbFind::VersionPins { .. } => {
-                                              //         cmd::versionpins::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Roles { .. } => {
-                                              //         cmd::all_roles::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Platforms { .. } => {
-                                              //         cmd::all_platforms::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Sites { .. } => {
-                                              //         cmd::all_sites::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Levels { .. } => {
-                                              //         cmd::all_levels::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Pins { .. } => {
-                                              //         cmd::pins::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::VersionPinWiths { .. } => {
-                                              //         cmd::versionpin_withs::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Withs { .. } => {
-                                              //         cmd::withs::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Packages { .. } => {
-                                              //         cmd::all_packages::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Distributions { .. } => {
-                                              //         cmd::all_distributions::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::PkgCoords { .. } => {
-                                              //         cmd::pkgcoords::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Revisions { .. } => {
-                                              //         cmd::all_revisions::find(client, cmd).await?;
-                                              //     }
-                                              //     PbFind::Changes { .. } => {
-                                              //         cmd::all_changes::find(client, cmd).await?;
-                                              //     }
+
+            PbFind::VersionPins {
+                package,
+                version,
+                level,
+                role,
+                platform,
+                site,
+                isolate_facility,
+                search_mode,
+                order_by,
+                order_direction,
+                limit,
+                full_withs,
+            } => {
+                let response = client
+                    .get_version_pins(
+                        pbclient::get_versionpins::Options::new()
+                            .package_opt(package)
+                            .version_opt(version)
+                            .level_opt(level)
+                            .role_opt(role)
+                            .platform_opt(platform)
+                            .site_opt(site)
+                            .isolate_facility_opt(Some(isolate_facility))
+                            .search_mode_opt(search_mode)
+                            .order_direction_opt(order_direction)
+                            .order_by_opt(order_by),
+                    )
+                    .await?;
+                println!("RESPONSE={:#?}", response);
+            }
+            _ => println!("Not Implemented"),
+            // PbFind::Roles { .. } => {
+            //     cmd::all_roles::find(client, cmd).await?;
+            // }
+            // PbFind::Platforms { .. } => {
+            //     cmd::all_platforms::find(client, cmd).await?;
+            // }
+            // PbFind::Sites { .. } => {
+            //     cmd::all_sites::find(client, cmd).await?;
+            // }
+            // PbFind::Levels { .. } => {
+            //     cmd::all_levels::find(client, cmd).await?;
+            // }
+            // PbFind::Pins { .. } => {
+            //     cmd::pins::find(client, cmd).await?;
+            // }
+            // PbFind::VersionPinWiths { .. } => {
+            //     cmd::versionpin_withs::find(client, cmd).await?;
+            // }
+            // PbFind::Withs { .. } => {
+            //     cmd::withs::find(client, cmd).await?;
+            // }
+            // PbFind::Packages { .. } => {
+            //     cmd::all_packages::find(client, cmd).await?;
+            // }
+            // PbFind::Distributions { .. } => {
+            //     cmd::all_distributions::find(client, cmd).await?;
+            // }
+            // PbFind::PkgCoords { .. } => {
+            //     cmd::pkgcoords::find(client, cmd).await?;
+            // }
+            // PbFind::Revisions { .. } => {
+            //     cmd::all_revisions::find(client, cmd).await?;
+            // }
+            // PbFind::Changes { .. } => {
+            //     cmd::all_changes::find(client, cmd).await?;
+            // }
         },
         // PbCrud::Add { cmd } => match cmd {
         //     PbAdd::Packages { .. } => {
