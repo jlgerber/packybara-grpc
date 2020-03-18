@@ -3,7 +3,7 @@ use std::fmt;
 use std::io;
 use std::net::SocketAddr;
 use std::net::ToSocketAddrs;
-use std::net::{Ipv4Addr, Ipv6Addr};
+//use std::net::{Ipv4Addr, Ipv6Addr};
 use std::vec;
 pub use url::Host as UrlHost;
 use url::Url;

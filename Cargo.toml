@@ -1,6 +1,6 @@
 [package]
 name = "packybara-grpc"
-version = "0.3.0"
+version = "0.4.0"
 authors = ["jlgerber <jlgerber@gmail.com>"]
 edition = "2018"
 
@@ -24,6 +24,7 @@ structopt = "0.3.11"
 url = "2.1.1"
 log = "0.4.8"
 snafu = "0.6.2"
+prettytable-rs = "0.8.0"
 
 [build-dependencies]
 tonic-build = "0.1.1"

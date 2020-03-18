@@ -14,3 +14,4 @@ pub use service::PackybaraService;
 pub mod client;
 pub mod url;
 pub mod url_builder;
+pub mod utils;
