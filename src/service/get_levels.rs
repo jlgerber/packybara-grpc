@@ -6,7 +6,7 @@ pub(crate) async fn get_levels(
     request: Request<LevelsQueryRequest>,
 ) -> Result<Response<LevelsQueryReply>, Status> {
     let mut pbd = PackratDb::new();
-
+    // TODO: fix order_by in packybara or remove.
     let LevelsQueryRequest {
         level,
         show,
