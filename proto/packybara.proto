@@ -4,7 +4,10 @@ package packybara;
 service Packybara {
   rpc GetVersionPin(VersionPinQueryRequest) returns (VersionPinQueryReply) {}
   rpc GetVersionPins(VersionPinsQueryRequest) returns (VersionPinsQueryReply) {}
+  rpc GetVersionPinWiths(VersionPinWithsQueryRequest)
+      returns (VersionPinWithsQueryReply) {}
 }
+
 // GET VERSION PIN
 //---------------------------
 message VersionPinQueryRequest {
@@ -57,3 +60,17 @@ message VersionPinsQueryRow {
 }
 message VersionPinsQueryReply { repeated VersionPinsQueryRow vpins = 1; }
 //-------------------------------
+
+// VersionPinWiths
+message VersionPinWithsQueryRequest { required int64 versionpin_id = 1; }
+
+message VersionPinWithsQueryRow {
+  required int64 id = 1;
+  required int64 vpin_id = 2;
+  required string with = 3;
+  required int64 order = 4;
+}
+
+message VersionPinWithsQueryReply {
+  repeated VersionPinWithsQueryRow withs = 1;
+}

@@ -1,6 +1,7 @@
 use log;
 use packybara::coords::Coords as PCoords;
 use packybara::db::find::versionpins::FindVersionPinsRow;
+use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
 use packybara::db::traits::*;
 use packybara::packrat::{Client, PackratDb};
@@ -13,10 +14,12 @@ use tonic::{Code, Request, Response, Status};
 
 use crate::{
     url::GrpcUrl, Coords, Packybara, PackybaraServer, VersionPinQueryReply, VersionPinQueryRequest,
+    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
     VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 
 mod get_version_pin;
+mod get_version_pin_withs;
 mod get_version_pins;
 
 #[derive(Debug)]
@@ -83,5 +86,13 @@ impl Packybara for PackybaraService {
         request: Request<VersionPinsQueryRequest>,
     ) -> Result<Response<VersionPinsQueryReply>, Status> {
         get_version_pins::get_version_pins(&self, request).await
+    }
+
+    async fn get_version_pin_withs(
+        &self,
+        request: Request<VersionPinWithsQueryRequest>,
+    ) -> Result<Response<VersionPinWithsQueryReply>, Status> {
+        get_version_pin_withs::get_version_pin_withs(&self, request).await
+        //Err(Status::new(Code::Internal, "not implemented"))
     }
 }

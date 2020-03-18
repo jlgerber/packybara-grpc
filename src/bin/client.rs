@@ -21,7 +21,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbFind::VersionPins { .. } => {
                 cmd::versionpins::find(client, cmd).await?;
             }
-            _ => println!("Not Implemented"),
             // PbFind::Roles { .. } => {
             //     cmd::all_roles::find(client, cmd).await?;
             // }
@@ -37,9 +36,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // PbFind::Pins { .. } => {
             //     cmd::pins::find(client, cmd).await?;
             // }
-            // PbFind::VersionPinWiths { .. } => {
-            //     cmd::versionpin_withs::find(client, cmd).await?;
-            // }
+            PbFind::VersionPinWiths { .. } => {
+                cmd::versionpin_withs::find(client, cmd).await?;
+            }
+            _ => println!("Not Implemented"),
             // PbFind::Withs { .. } => {
             //     cmd::withs::find(client, cmd).await?;
             // }

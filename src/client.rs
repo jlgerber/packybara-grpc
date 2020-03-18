@@ -1,8 +1,10 @@
 use crate::{
     url as grpcurl, Coords, PackybaraClient, VersionPinQueryReply, VersionPinQueryRequest,
+    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
     VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 use packybara::db::find::versionpins::FindVersionPinsRow;
+use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
 use std::convert::TryFrom;
 use tonic::transport::{Channel, Endpoint};
@@ -150,6 +152,30 @@ impl Client {
             .collect::<Vec<_>>();
 
         Ok(results)
+    }
+
+    pub async fn get_version_pin_withs(
+        &mut self,
+        versionpin_id: i64,
+    ) -> Result<Vec<FindAllWithsRow>, Box<dyn std::error::Error>> {
+        let request = tonic::Request::new(VersionPinWithsQueryRequest { versionpin_id });
+        let response = self.client.get_version_pin_withs(request).await?;
+        let VersionPinWithsQueryReply { withs } = response.into_inner();
+        let withs = withs
+            .into_iter()
+            .map(|vpin| {
+                let VersionPinWithsQueryRow {
+                    id,
+                    vpin_id,
+                    with,
+                    order,
+                } = vpin;
+                //let withs = if withs.len() > 0 { Some(withs) } else { None };
+                FindAllWithsRow::from_parts(id as i32, vpin_id as i32, with, order as i32)
+            })
+            .collect::<Vec<FindAllWithsRow>>();
+        Ok(withs)
+        //Err("problem")
     }
 }
 
