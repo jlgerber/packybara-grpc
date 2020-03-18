@@ -66,7 +66,7 @@ impl PackybaraService {
 
 #[tonic::async_trait]
 impl Packybara for PackybaraService {
-    async fn get_version_pin_gr(
+    async fn get_version_pin(
         &self,
         request: Request<VersionPinQueryRequest>,
     ) -> Result<Response<VersionPinQueryReply>, Status> {
@@ -114,7 +114,7 @@ impl Packybara for PackybaraService {
         return Ok(Response::new(reply));
     }
 
-    async fn get_version_pins_gr(
+    async fn get_version_pins(
         &self,
         request: Request<VersionPinsQueryRequest>,
     ) -> Result<Response<VersionPinsQueryReply>, Status> {

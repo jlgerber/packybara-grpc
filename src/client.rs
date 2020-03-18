@@ -57,7 +57,7 @@ impl Client {
             platform,
             site,
         });
-        let response = self.client.get_version_pin_gr(request).await?;
+        let response = self.client.get_version_pin(request).await?;
         let VersionPinQueryReply {
             versionpin_id,
             distribution,
@@ -115,7 +115,7 @@ impl Client {
             full_withs: Some(false),
             limit: None,
         });
-        let response = self.client.get_version_pins_gr(request).await?;
+        let response = self.client.get_version_pins(request).await?;
         let VersionPinsQueryReply { vpins } = response.into_inner();
 
         let results = vpins

@@ -2,9 +2,8 @@ syntax = "proto2";
 package packybara;
 
 service Packybara {
-  rpc GetVersionPinGr(VersionPinQueryRequest) returns (VersionPinQueryReply) {}
-  rpc GetVersionPinsGr(VersionPinsQueryRequest)
-      returns (VersionPinsQueryReply) {}
+  rpc GetVersionPin(VersionPinQueryRequest) returns (VersionPinQueryReply) {}
+  rpc GetVersionPins(VersionPinsQueryRequest) returns (VersionPinsQueryReply) {}
 }
 // GET VERSION PIN
 //---------------------------
