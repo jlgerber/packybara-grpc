@@ -25,3 +25,18 @@ pub fn extract_coords(
 
     (l, r, p, s, m)
 }
+
+/// Truncate a provides &str to a supplied number of characters
+///
+/// # Arguments
+/// * `s` - The incoming str
+/// * `max_chars` - The maximum number of characters.
+///
+/// # Returns
+/// * a &str that is, at most `max_chars` long
+pub fn truncate(s: &str, max_chars: usize) -> &str {
+    match s.char_indices().nth(max_chars) {
+        None => s,
+        Some((idx, _)) => &s[..idx],
+    }
+}

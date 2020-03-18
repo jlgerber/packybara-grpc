@@ -1,6 +1,6 @@
 use packybara_grpc::client as pbclient;
 mod cmd;
-use cmd::*;
+use cmd::args::*;
 use packybara_grpc::url_builder;
 use structopt::StructOpt;
 
@@ -11,63 +11,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .host(url_builder::Host::Localhost)
         .port(50051)
         .build(); //"http://[::1]:50051"
-    let mut client = pbclient::Client::new(url).await?;
+    let client = pbclient::Client::new(url).await?;
     let Pb { crud, .. } = opt;
     match crud {
         PbCrud::Find { cmd } => match cmd {
-            PbFind::VersionPin {
-                package,
-                level,
-                role,
-                platform,
-                site,
-                full_withs,
-                json,
-                ..
-            } => {
-                let response = client
-                    .get_version_pin(
-                        pbclient::get_versionpin::Options::new(package)
-                            .level_opt(level)
-                            .role_opt(role)
-                            .platform_opt(platform)
-                            .site_opt(site),
-                    )
-                    .await?;
-                display::versionpin(response, full_withs, json);
+            PbFind::VersionPin { .. } => {
+                cmd::versionpin::find(client, cmd).await?;
             }
-
-            PbFind::VersionPins {
-                package,
-                version,
-                level,
-                role,
-                platform,
-                site,
-                isolate_facility,
-                search_mode,
-                order_by,
-                order_direction,
-                limit,
-                full_withs,
-            } => {
-                let response = client
-                    .get_version_pins(
-                        pbclient::get_versionpins::Options::new()
-                            .package_opt(package)
-                            .version_opt(version)
-                            .level_opt(level)
-                            .role_opt(role)
-                            .platform_opt(platform)
-                            .site_opt(site)
-                            .isolate_facility_opt(Some(isolate_facility))
-                            .search_mode_opt(search_mode)
-                            .order_direction_opt(order_direction)
-                            .order_by_opt(order_by),
-                    )
-                    .await?;
-
-                display::versionpins(response, full_withs);
+            PbFind::VersionPins { .. } => {
+                cmd::versionpins::find(client, cmd).await?;
             }
             _ => println!("Not Implemented"),
             // PbFind::Roles { .. } => {

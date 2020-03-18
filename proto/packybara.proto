@@ -45,8 +45,7 @@ message VersionPinsQueryRequest {
   optional string limit = 8;
   optional string order_by = 9;
   optional string order_direction = 10;
-  optional bool full_withs = 11;
-  optional bool isolate_facility = 12;
+  optional bool isolate_facility = 11;
 }
 message VersionPinsQueryRow {
   required int64 versionpin_id = 1;

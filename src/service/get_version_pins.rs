@@ -18,7 +18,6 @@ pub(crate) async fn get_version_pins(
         search_mode,
         order_by,
         order_direction,
-        full_withs,
         limit,
     } = request.into_inner();
 

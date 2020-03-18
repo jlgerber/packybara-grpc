@@ -112,7 +112,6 @@ impl Client {
             search_mode,
             order_by,
             order_direction,
-            full_withs: Some(false),
             limit: None,
         });
         let response = self.client.get_version_pins(request).await?;
