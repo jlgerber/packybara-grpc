@@ -1,6 +1,6 @@
 use packybara_grpc::client as pbclient;
-mod client_cli;
-use client_cli::*;
+mod cmd;
+use cmd::*;
 use packybara_grpc::url_builder;
 use structopt::StructOpt;
 
@@ -21,6 +21,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 role,
                 platform,
                 site,
+                full_withs,
+                json,
                 ..
             } => {
                 let response = client
@@ -32,7 +34,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             .site_opt(site),
                     )
                     .await?;
-                println!("RESPONSE={:#?}", response);
+                display::versionpin(response, full_withs, json);
             }
 
             PbFind::VersionPins {
@@ -64,7 +66,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             .order_by_opt(order_by),
                     )
                     .await?;
-                println!("RESPONSE={:#?}", response);
+
+                display::versionpins(response, full_withs);
             }
             _ => println!("Not Implemented"),
             // PbFind::Roles { .. } => {

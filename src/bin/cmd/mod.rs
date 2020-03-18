@@ -6,6 +6,7 @@ pub(crate) use find::PbFind;
 // pub use set::*;
 // pub mod export;
 // pub use export::*;
+pub(crate) mod display;
 
 use structopt::StructOpt;
 
