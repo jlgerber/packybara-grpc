@@ -1,5 +1,6 @@
 use crate::{
-    url as grpcurl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, PackybaraClient,
+    url as grpcurl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow,
+    PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow, PackybaraClient,
     PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply,
     RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest, SitesQueryRow,
     VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
@@ -8,6 +9,7 @@ use crate::{
 };
 use packybara::db::find::versionpins::FindVersionPinsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
+use packybara::db::find_all::packages::FindAllPackagesRow;
 use packybara::db::find_all::platforms::FindAllPlatformsRow;
 use packybara::db::find_all::roles::FindAllRolesRow;
 use packybara::db::find_all::sites::FindAllSitesRow;
@@ -292,6 +294,26 @@ impl Client {
             .map(|name| {
                 let PlatformsQueryRow { name } = name;
                 FindAllPlatformsRow::from_parts(&name)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
+
+    pub async fn get_packages(
+        &mut self,
+        options: get_packages::Options,
+    ) -> Result<Vec<FindAllPackagesRow>, Box<dyn std::error::Error>> {
+        let get_packages::Options { name } = options;
+        let request = tonic::Request::new(PackagesQueryRequest { name });
+        let response = self.client.get_packages(request).await?;
+        let PackagesQueryReply { names } = response.into_inner();
+
+        let results = names
+            .into_iter()
+            .map(|name| {
+                let PackagesQueryRow { name } = name;
+                FindAllPackagesRow::from_parts(&name)
             })
             .collect::<Vec<_>>();
 
@@ -750,5 +772,50 @@ pub mod get_platforms {
             self.limit = limit;
             self
         }
+    }
+}
+
+pub mod get_packages {
+    /// Encapsulate the query parameters
+    pub struct Options {
+        pub name: Option<String>,
+    }
+
+    impl Options {
+        /// New up an instance of get_platform::Options given a name, order_by
+        /// order_direction, and limit
+        ///
+        /// # Arguments
+        ///
+        /// * `name` - the optional name of the platform
+        /// * `order_by` - the optional field to order by
+        /// * `order_direction` - the optional direction to order by
+        /// * `limit` - the optional limit
+        ///
+        /// # Returns
+        ///
+        /// * Option instance
+        pub fn new() -> Self {
+            Self { name: None }
+        }
+
+        pub fn name_opt(mut self, name: Option<String>) -> Self {
+            self.name = name;
+            self
+        }
+
+        // pub fn order_direction_opt(mut self, direction: Option<String>) -> Self {
+        //     self.order_direction = direction;
+        //     self
+        // }
+
+        // pub fn order_by_opt(mut self, order_by: Option<String>) -> Self {
+        //     self.order_by = order_by;
+        //     self
+        // }
+        // pub fn limit_opt(mut self, limit: Option<i32>) -> Self {
+        //     self.limit = limit;
+        //     self
+        // }
     }
 }

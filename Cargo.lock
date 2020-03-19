@@ -852,8 +852,8 @@ checksum = "2839e79665f131bdb5782e51f2c6c9599c133c6098982a54c794358bf432529c"
 
 [[package]]
 name = "packybara"
-version = "0.57.0"
-source = "git+https://github.com/jlgerber/packybara?tag=async_v0.57.0#7e9c803b704682ff3649fecebb918d43789cf8ba"
+version = "0.59.0"
+source = "git+https://github.com/jlgerber/packybara?tag=async_v0.59.0#a67a55301d59f11f4704dac59367f1b6aecb33d1"
 dependencies = [
  "async-trait",
  "chrono",
@@ -877,7 +877,7 @@ dependencies = [
 
 [[package]]
 name = "packybara-grpc"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "log",
  "packybara",
@@ -1389,9 +1389,9 @@ checksum = "5c2fb2ec9bcd216a5b0d0ccf31ab17b5ed1d627960edff65bbe95d3ce221cefc"
 
 [[package]]
 name = "snafu"
-version = "0.6.2"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "546db9181bce2aa22ed883c33d65603b76335b4c2533a98289f54265043de7a1"
+checksum = "48492e4f51c6e679217e80c11290edfdedf3133e358f4f432a6296f4c820f95b"
 dependencies = [
  "doc-comment",
  "snafu-derive",
@@ -1399,9 +1399,9 @@ dependencies = [
 
 [[package]]
 name = "snafu-derive"
-version = "0.6.2"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bdc75da2e0323f297402fd9c8fdba709bb04e4c627cbe31d19a2c91fc8d9f0e2"
+checksum = "b5d1c41856cbfa99befda5034c72539dd9d7dd6f3e61058bdb804ac40715bc2a"
 dependencies = [
  "proc-macro2 1.0.9",
  "quote 1.0.3",
@@ -1426,9 +1426,9 @@ checksum = "8ea5119cdb4c55b55d432abb513a0429384878c15dde60cc77b1c99de1a95a6a"
 
 [[package]]
 name = "structopt"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3fe43617218c0805c6eb37160119dc3c548110a67786da7218d1c6555212f073"
+checksum = "c8faa2719539bbe9d77869bfb15d4ee769f99525e707931452c97b693b3f159d"
 dependencies = [
  "clap",
  "lazy_static",
@@ -1437,9 +1437,9 @@ dependencies = [
 
 [[package]]
 name = "structopt-derive"
-version = "0.4.4"
+version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c6e79c80e0f4efd86ca960218d4e056249be189ff1c42824dcd9a7f51a56f0bd"
+checksum = "3f88b8e18c69496aad6f9ddf4630dd7d585bcaf765786cb415b9aec2fe5a0430"
 dependencies = [
  "heck",
  "proc-macro-error",

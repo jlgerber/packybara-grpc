@@ -204,7 +204,11 @@ pub enum PbFind {
     },
     #[structopt(display_order = 10)]
     /// Get a simple list of all packages.
-    Packages {},
+    Packages {
+        /// optional name of package. You may use '%' as a wildcard
+        #[structopt(short, long, display_order = 1)]
+        package: Option<String>,
+    },
     #[structopt(display_order = 11)]
     /// Get a list of distributions
     Distributions {

@@ -39,13 +39,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbFind::VersionPinWiths { .. } => {
                 cmd::versionpin_withs::find(client, cmd).await?;
             }
-            _ => println!("Not Implemented"),
             // PbFind::Withs { .. } => {
             //     cmd::withs::find(client, cmd).await?;
             // }
-            // PbFind::Packages { .. } => {
-            //     cmd::all_packages::find(client, cmd).await?;
-            // }
+            PbFind::Packages { .. } => {
+                cmd::packages::find(client, cmd).await?;
+            }
             // PbFind::Distributions { .. } => {
             //     cmd::all_distributions::find(client, cmd).await?;
             // }
@@ -58,6 +57,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             // PbFind::Changes { .. } => {
             //     cmd::all_changes::find(client, cmd).await?;
             // }
+            _ => println!("Not Implemented"),
         },
         // PbCrud::Add { cmd } => match cmd {
         //     PbAdd::Packages { .. } => {

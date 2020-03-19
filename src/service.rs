@@ -2,6 +2,7 @@ use log;
 use packybara::coords::Coords as PCoords;
 use packybara::db::find::versionpins::FindVersionPinsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
+use packybara::db::find_all::packages::FindAllPackagesRow;
 use packybara::db::find_all::platforms::FindAllPlatformsRow;
 use packybara::db::find_all::roles::FindAllRolesRow;
 use packybara::db::find_all::sites::FindAllSitesRow;
@@ -17,15 +18,16 @@ use tonic::transport::Server;
 use tonic::{Code, Request, Response, Status};
 
 use crate::{
-    url::GrpcUrl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, Packybara,
-    PackybaraServer, PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow,
-    RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest,
-    SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
-    VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
-    VersionPinsQueryRequest, VersionPinsQueryRow,
+    url::GrpcUrl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply,
+    PackagesQueryRequest, PackagesQueryRow, Packybara, PackybaraServer, PlatformsQueryReply,
+    PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
+    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
+    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
+    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 
 mod get_levels;
+mod get_packages;
 mod get_platforms;
 mod get_roles;
 mod get_sites;
@@ -133,5 +135,11 @@ impl Packybara for PackybaraService {
     ) -> Result<Response<PlatformsQueryReply>, Status> {
         get_platforms::get_platforms(&self, request).await
         //Err(Status::new(Code::Internal, "not implemented"))
+    }
+    async fn get_packages(
+        &self,
+        request: Request<PackagesQueryRequest>,
+    ) -> Result<Response<PackagesQueryReply>, Status> {
+        get_packages::get_packages(&self, request).await
     }
 }
