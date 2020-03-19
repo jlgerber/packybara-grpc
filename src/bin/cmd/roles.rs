@@ -23,7 +23,7 @@ pub(crate) async fn find(
                     .category_opt(category)
                     .order_by_opt(order_by)
                     .order_direction_opt(order_direction)
-                    .limit_opt(limit.map(|x| x as u64)),
+                    .limit_opt(limit),
             )
             .await?;
         let mut table = table!([bFg => "ROLE", "CATEGORY"]);

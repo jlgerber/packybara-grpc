@@ -560,7 +560,7 @@ pub mod get_roles {
         pub category: Option<String>,
         pub order_by: Option<String>,
         pub order_direction: Option<String>,
-        pub limit: Option<u64>,
+        pub limit: Option<i32>,
     }
 
     impl Options {
@@ -607,7 +607,7 @@ pub mod get_roles {
             self.order_by = order_by;
             self
         }
-        pub fn limit_opt(mut self, limit: Option<u64>) -> Self {
+        pub fn limit_opt(mut self, limit: Option<i32>) -> Self {
             self.limit = limit;
             self
         }
