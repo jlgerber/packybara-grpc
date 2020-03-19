@@ -4,13 +4,11 @@ version = "0.9.0"
 authors = ["jlgerber <jlgerber@gmail.com>"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[[bin]] # Bin to run the HelloWorld gRPC server
+[[bin]] 
 name = "packybara-grpc-server"
 path = "src/bin/server.rs"
 
-[[bin]] # Bin to run the HelloWorld gRPC client
+[[bin]] 
 name = "packybara-grpc-client"
 path = "src/bin/client.rs"
 
