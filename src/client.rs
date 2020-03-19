@@ -1,12 +1,14 @@
 use crate::{
     url as grpcurl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, PackybaraClient,
-    RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest,
-    SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
+    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply,
+    RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest, SitesQueryRow,
+    VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
     VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
     VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 use packybara::db::find::versionpins::FindVersionPinsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
+use packybara::db::find_all::platforms::FindAllPlatformsRow;
 use packybara::db::find_all::roles::FindAllRolesRow;
 use packybara::db::find_all::sites::FindAllSitesRow;
 use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
@@ -260,6 +262,36 @@ impl Client {
             .map(|role| {
                 let RolesQueryRow { role, category } = role;
                 FindAllRolesRow::from_parts(&role, &category)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
+
+    pub async fn get_platforms(
+        &mut self,
+        options: get_platforms::Options,
+    ) -> Result<Vec<FindAllPlatformsRow>, Box<dyn std::error::Error>> {
+        let get_platforms::Options {
+            name,
+            order_by,
+            order_direction,
+            limit,
+        } = options;
+        let request = tonic::Request::new(PlatformsQueryRequest {
+            name,
+            order_by,
+            order_direction,
+            limit: limit.map(|x| x as i32),
+        });
+        let response = self.client.get_platforms(request).await?;
+        let PlatformsQueryReply { names } = response.into_inner();
+
+        let results = names
+            .into_iter()
+            .map(|name| {
+                let PlatformsQueryRow { name } = name;
+                FindAllPlatformsRow::from_parts(&name)
             })
             .collect::<Vec<_>>();
 
@@ -663,6 +695,59 @@ pub mod get_sites {
 
         pub fn name_opt(mut self, name: Option<String>) -> Self {
             self.name = name;
+            self
+        }
+    }
+}
+
+pub mod get_platforms {
+    /// Encapsulate the query parameters
+    pub struct Options {
+        pub name: Option<String>,
+        pub order_by: Option<String>,
+        pub order_direction: Option<String>,
+        pub limit: Option<i32>,
+    }
+
+    impl Options {
+        /// New up an instance of get_platform::Options given a name, order_by
+        /// order_direction, and limit
+        ///
+        /// # Arguments
+        ///
+        /// * `name` - the optional name of the platform
+        /// * `order_by` - the optional field to order by
+        /// * `order_direction` - the optional direction to order by
+        /// * `limit` - the optional limit
+        ///
+        /// # Returns
+        ///
+        /// * Option instance
+        pub fn new() -> Self {
+            Self {
+                name: None,
+                order_direction: None,
+                order_by: None,
+                limit: None,
+            }
+        }
+
+        pub fn name_opt(mut self, name: Option<String>) -> Self {
+            self.name = name;
+            self
+        }
+
+        pub fn order_direction_opt(mut self, direction: Option<String>) -> Self {
+            self.order_direction = direction;
+            self
+        }
+
+        pub fn order_by_opt(mut self, order_by: Option<String>) -> Self {
+            self.order_by = order_by;
+            self
+        }
+        pub fn limit_opt(mut self, limit: Option<i32>) -> Self {
+            self.limit = limit;
             self
         }
     }

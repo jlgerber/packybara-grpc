@@ -171,6 +171,12 @@ pub enum PbFind {
         ///  Order by ... Platform or nutin'.
         #[structopt(short, long = "order-by", display_order = 2)]
         order_by: Option<String>,
+        /// The order direction. may be "asc" or "desc".
+        #[structopt(short = "D", long = "order-direction", display_order = 4)]
+        order_direction: Option<String>,
+        /// Limit the number of returned items.
+        #[structopt(short, long, display_order = 5)]
+        limit: Option<IdType>,
     },
     #[structopt(display_order = 8)]
     /// Get a simple list of all sites.

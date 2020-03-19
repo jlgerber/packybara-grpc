@@ -1,5 +1,6 @@
 pub(crate) mod args;
 pub(crate) mod levels;
+pub(crate) mod platforms;
 pub(crate) mod roles;
 pub(crate) mod sites;
 pub(crate) mod versionpin;

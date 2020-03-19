@@ -9,6 +9,7 @@ service Packybara {
   rpc GetLevels(LevelsQueryRequest) returns (LevelsQueryReply) {}
   rpc GetRoles(RolesQueryRequest) returns (RolesQueryReply) {}
   rpc GetSites(SitesQueryRequest) returns (SitesQueryReply) {}
+  rpc GetPlatforms(PlatformsQueryRequest) returns (PlatformsQueryReply) {}
 }
 
 // GET VERSION PIN
@@ -115,3 +116,17 @@ message RolesQueryReply { repeated RolesQueryRow roles = 1; }
 message SitesQueryRequest { optional string name = 1; }
 message SitesQueryRow { required string name = 1; }
 message SitesQueryReply { repeated SitesQueryRow names = 1; }
+
+//---------------------------------
+// platforms
+
+message PlatformsQueryRequest {
+  optional string name = 1;
+  optional string order_by = 2;
+  optional string order_direction = 3;
+  optional int32 limit = 4;
+}
+message PlatformsQueryRow { required string name = 1; }
+message PlatformsQueryReply { repeated PlatformsQueryRow names = 1; }
+
+//---------------------------------

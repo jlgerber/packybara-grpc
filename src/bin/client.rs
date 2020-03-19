@@ -24,9 +24,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbFind::Roles { .. } => {
                 cmd::roles::find(client, cmd).await?;
             }
-            // PbFind::Platforms { .. } => {
-            //     cmd::all_platforms::find(client, cmd).await?;
-            // }
+            PbFind::Platforms { .. } => {
+                cmd::platforms::find(client, cmd).await?;
+            }
             PbFind::Sites { .. } => {
                 cmd::sites::find(client, cmd).await?;
             }
