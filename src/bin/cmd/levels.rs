@@ -1,7 +1,7 @@
 use super::args::find::PbFind;
 use packybara_grpc::client as pbclient;
 use packybara_grpc::client::Client;
-use packybara_grpc::utils::truncate;
+//use packybara_grpc::utils::truncate;
 use prettytable::{cell, format, row, table};
 
 pub(crate) async fn find(

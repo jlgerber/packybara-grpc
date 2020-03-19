@@ -21,9 +21,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbFind::VersionPins { .. } => {
                 cmd::versionpins::find(client, cmd).await?;
             }
-            // PbFind::Roles { .. } => {
-            //     cmd::all_roles::find(client, cmd).await?;
-            // }
+            PbFind::Roles { .. } => {
+                cmd::roles::find(client, cmd).await?;
+            }
             // PbFind::Platforms { .. } => {
             //     cmd::all_platforms::find(client, cmd).await?;
             // }
