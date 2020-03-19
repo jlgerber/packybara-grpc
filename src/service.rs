@@ -3,6 +3,7 @@ use packybara::coords::Coords as PCoords;
 use packybara::db::find::versionpins::FindVersionPinsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::roles::FindAllRolesRow;
+use packybara::db::find_all::sites::FindAllSitesRow;
 use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
 use packybara::db::traits::*;
@@ -16,13 +17,15 @@ use tonic::{Code, Request, Response, Status};
 
 use crate::{
     url::GrpcUrl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, Packybara,
-    PackybaraServer, RolesQueryReply, RolesQueryRequest, RolesQueryRow, VersionPinQueryReply,
-    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
-    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    PackybaraServer, RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply,
+    SitesQueryRequest, SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest,
+    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
+    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 
 mod get_levels;
 mod get_roles;
+mod get_sites;
 mod get_version_pin;
 mod get_version_pin_withs;
 mod get_version_pins;
@@ -112,6 +115,13 @@ impl Packybara for PackybaraService {
         request: Request<RolesQueryRequest>,
     ) -> Result<Response<RolesQueryReply>, Status> {
         get_roles::get_roles(&self, request).await
+        //Err(Status::new(Code::Internal, "not implemented"))
+    }
+    async fn get_sites(
+        &self,
+        request: Request<SitesQueryRequest>,
+    ) -> Result<Response<SitesQueryReply>, Status> {
+        get_sites::get_sites(&self, request).await
         //Err(Status::new(Code::Internal, "not implemented"))
     }
 }

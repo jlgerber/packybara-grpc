@@ -2,9 +2,10 @@ pub use pb::packybara_client::PackybaraClient;
 pub use pb::packybara_server::{Packybara, PackybaraServer};
 pub use pb::{
     Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, RolesQueryReply,
-    RolesQueryRequest, RolesQueryRow, VersionPinQueryReply, VersionPinQueryRequest,
-    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
-    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest, SitesQueryRow,
+    VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
+    VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
+    VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 
 pub mod pb {

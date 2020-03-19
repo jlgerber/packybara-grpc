@@ -1,12 +1,14 @@
 use crate::{
     url as grpcurl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, PackybaraClient,
-    RolesQueryReply, RolesQueryRequest, RolesQueryRow, VersionPinQueryReply,
-    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
-    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest,
+    SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
+    VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
+    VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 use packybara::db::find::versionpins::FindVersionPinsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::roles::FindAllRolesRow;
+use packybara::db::find_all::sites::FindAllSitesRow;
 use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
 
@@ -206,6 +208,26 @@ impl Client {
             .map(|level| {
                 let LevelsQueryRow { level, show } = level;
                 FindAllLevelsRow::from_parts(&level, &show)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
+
+    pub async fn get_sites(
+        &mut self,
+        options: get_sites::Options,
+    ) -> Result<Vec<FindAllSitesRow>, Box<dyn std::error::Error>> {
+        let get_sites::Options { name } = options;
+        let request = tonic::Request::new(SitesQueryRequest { name });
+        let response = self.client.get_sites(request).await?;
+        let SitesQueryReply { names } = response.into_inner();
+
+        let results = names
+            .into_iter()
+            .map(|site| {
+                let SitesQueryRow { name } = site;
+                FindAllSitesRow::from_parts(&name)
             })
             .collect::<Vec<_>>();
 
@@ -609,6 +631,38 @@ pub mod get_roles {
         }
         pub fn limit_opt(mut self, limit: Option<i32>) -> Self {
             self.limit = limit;
+            self
+        }
+    }
+}
+
+pub mod get_sites {
+    /// Encapsulate the query parameters
+    pub struct Options {
+        pub name: Option<String>,
+    }
+
+    impl Options {
+        /// New up an instance of get_roles::Options given a role, category, order_by
+        /// order_direction, and limit
+        ///
+        /// # Arguments
+        ///
+        /// * `role` - the optional name of the role
+        /// * `category` - the optional name of the category
+        /// * `order_by` - the optional field to order by
+        /// * `order_direction` - the optional direction to order by
+        /// * `limit` - the optional limit
+        ///
+        /// # Returns
+        ///
+        /// * Option instance
+        pub fn new() -> Self {
+            Self { name: None }
+        }
+
+        pub fn name_opt(mut self, name: Option<String>) -> Self {
+            self.name = name;
             self
         }
     }

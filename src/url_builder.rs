@@ -7,7 +7,7 @@ use std::net::SocketAddr;
 use std::net::ToSocketAddrs;
 use std::net::{Ipv4Addr, Ipv6Addr};
 pub use url::Host as UrlHost;
-use url::Url;
+//use url::Url;
 pub use url::{form_urlencoded, Origin, ParseError, ParseOptions, PathSegmentsMut, UrlQuery};
 /// The scheme may either be http or https
 #[derive(Debug, PartialEq, Eq)]
