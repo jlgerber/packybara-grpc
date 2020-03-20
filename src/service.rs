@@ -4,6 +4,7 @@ use packybara::db::find::versionpins::FindVersionPinsRow;
 use packybara::db::find_all::distributions::FindAllDistributionsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::packages::FindAllPackagesRow;
+use packybara::db::find_all::pkgcoords::FindAllPkgCoordsRow;
 use packybara::db::find_all::platforms::FindAllPlatformsRow;
 use packybara::db::find_all::roles::FindAllRolesRow;
 use packybara::db::find_all::sites::FindAllSitesRow;
@@ -22,16 +23,17 @@ use crate::{
     url::GrpcUrl, Coords, DistributionsQueryReply, DistributionsQueryRequest,
     DistributionsQueryRow, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow,
     PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow, Packybara, PackybaraServer,
-    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply,
-    RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest, SitesQueryRow,
-    VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
-    VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
-    VersionPinsQueryRequest, VersionPinsQueryRow,
+    PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow, PlatformsQueryReply,
+    PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
+    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
+    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
+    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 
 mod get_distributions;
 mod get_levels;
 mod get_packages;
+mod get_pkgcoords;
 mod get_platforms;
 mod get_roles;
 mod get_sites;
@@ -152,5 +154,12 @@ impl Packybara for PackybaraService {
         request: Request<DistributionsQueryRequest>,
     ) -> Result<Response<DistributionsQueryReply>, Status> {
         get_distributions::get_distributions(&self, request).await
+    }
+
+    async fn get_pkg_coords(
+        &self,
+        request: Request<PkgCoordsQueryRequest>,
+    ) -> Result<Response<PkgCoordsQueryReply>, Status> {
+        get_pkgcoords::get_pkgcoords(&self, request).await
     }
 }

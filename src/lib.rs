@@ -3,9 +3,10 @@ pub use pb::packybara_server::{Packybara, PackybaraServer};
 pub use pb::{
     Coords, DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow,
     LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply, PackagesQueryRequest,
-    PackagesQueryRow, PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow,
-    RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest,
-    SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
+    PackagesQueryRow, PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow,
+    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply,
+    RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest, SitesQueryRow,
+    VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
     VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
     VersionPinsQueryRequest, VersionPinsQueryRow,
 };

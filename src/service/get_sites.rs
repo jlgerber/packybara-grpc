@@ -1,5 +1,4 @@
 use super::*;
-//use packybara::db::find_all::sites::FindAllSitesError;
 
 pub(crate) async fn get_sites(
     service: &PackybaraService,

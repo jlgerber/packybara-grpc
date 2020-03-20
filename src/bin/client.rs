@@ -48,9 +48,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbFind::Distributions { .. } => {
                 cmd::distributions::find(client, cmd).await?;
             }
-            // PbFind::PkgCoords { .. } => {
-            //     cmd::pkgcoords::find(client, cmd).await?;
-            // }
+            PbFind::PkgCoords { .. } => {
+                cmd::pkgcoords::find(client, cmd).await?;
+            }
             // PbFind::Revisions { .. } => {
             //     cmd::all_revisions::find(client, cmd).await?;
             // }
