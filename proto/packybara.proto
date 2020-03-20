@@ -11,6 +11,8 @@ service Packybara {
   rpc GetSites(SitesQueryRequest) returns (SitesQueryReply) {}
   rpc GetPlatforms(PlatformsQueryRequest) returns (PlatformsQueryReply) {}
   rpc GetPackages(PackagesQueryRequest) returns (PackagesQueryReply) {}
+  rpc GetDistributions(DistributionsQueryRequest)
+      returns (DistributionsQueryReply) {}
 }
 
 // GET VERSION PIN
@@ -136,4 +138,20 @@ message PlatformsQueryReply { repeated PlatformsQueryRow names = 1; }
 message PackagesQueryRequest { optional string name = 1; }
 message PackagesQueryRow { required string name = 1; }
 message PackagesQueryReply { repeated PackagesQueryRow names = 1; }
+//---------------------------------
+// Distributions
+
+message DistributionsQueryRequest {
+  optional string package = 1;
+  optional string version = 2;
+  optional string order_direction = 3;
+}
+message DistributionsQueryRow {
+  required int64 id = 1;
+  required string package = 2;
+  required string version = 3;
+}
+message DistributionsQueryReply {
+  repeated DistributionsQueryRow distributions = 1;
+}
 //---------------------------------

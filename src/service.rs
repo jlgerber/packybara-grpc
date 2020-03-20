@@ -1,6 +1,7 @@
 use log;
 use packybara::coords::Coords as PCoords;
 use packybara::db::find::versionpins::FindVersionPinsRow;
+use packybara::db::find_all::distributions::FindAllDistributionsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::packages::FindAllPackagesRow;
 use packybara::db::find_all::platforms::FindAllPlatformsRow;
@@ -18,14 +19,17 @@ use tonic::transport::Server;
 use tonic::{Code, Request, Response, Status};
 
 use crate::{
-    url::GrpcUrl, Coords, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply,
-    PackagesQueryRequest, PackagesQueryRow, Packybara, PackybaraServer, PlatformsQueryReply,
-    PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
-    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
-    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
-    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    url::GrpcUrl, Coords, DistributionsQueryReply, DistributionsQueryRequest,
+    DistributionsQueryRow, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow,
+    PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow, Packybara, PackybaraServer,
+    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply,
+    RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest, SitesQueryRow,
+    VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
+    VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
+    VersionPinsQueryRequest, VersionPinsQueryRow,
 };
 
+mod get_distributions;
 mod get_levels;
 mod get_packages;
 mod get_platforms;
@@ -141,5 +145,12 @@ impl Packybara for PackybaraService {
         request: Request<PackagesQueryRequest>,
     ) -> Result<Response<PackagesQueryReply>, Status> {
         get_packages::get_packages(&self, request).await
+    }
+
+    async fn get_distributions(
+        &self,
+        request: Request<DistributionsQueryRequest>,
+    ) -> Result<Response<DistributionsQueryReply>, Status> {
+        get_distributions::get_distributions(&self, request).await
     }
 }
