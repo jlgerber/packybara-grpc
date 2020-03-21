@@ -1,7 +1,6 @@
 use super::args::find::PbFind;
 use packybara_grpc::client as pbclient;
 use packybara_grpc::client::Client;
-use packybara_grpc::utils::truncate;
 use prettytable::{cell, format, row, table};
 
 pub(crate) async fn find(
@@ -14,6 +13,7 @@ pub(crate) async fn find(
         role,
         platform,
         site,
+        limit,
         order_by,
         order_direction,
         ..
@@ -27,6 +27,7 @@ pub(crate) async fn find(
                     .role_opt(role)
                     .platform_opt(platform)
                     .site_opt(site)
+                    .limit_opt(limit)
                     .order_by_opt(order_by)
                     .order_direction_opt(order_direction),
             )

@@ -13,6 +13,7 @@ pub(crate) async fn get_withs(
         role,
         platform,
         site,
+        limit,
         order_by,
         order_direction,
     } = request.into_inner();
@@ -22,6 +23,7 @@ pub(crate) async fn get_withs(
         .level_opt(level.as_deref())
         .role_opt(role.as_deref())
         .platform_opt(platform.as_deref())
+        .limit_opt(limit)
         .site_opt(site.as_deref());
     if let Some(ref order) = order_by {
         let orders = order

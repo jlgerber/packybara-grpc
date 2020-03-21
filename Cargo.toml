@@ -17,7 +17,7 @@ tonic = "0.1"
 prost = "0.6"
 tokio = { version = "0.2", features = ["macros"] }
 tokio-postgres = "0.5.3"
-packybara = {git= "https://github.com/jlgerber/packybara", tag="async_v0.60.1"}
+packybara = {git= "https://github.com/jlgerber/packybara", tag="async_v0.61.0"}
 structopt = "0.3.11"
 url = "2.1.1"
 log = "0.4.8"

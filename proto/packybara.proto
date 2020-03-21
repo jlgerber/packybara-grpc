@@ -186,8 +186,9 @@ message WithsQueryRequest {
   optional string role = 3;
   optional string platform = 4;
   optional string site = 5;
-  optional string order_by = 6;
-  optional string order_direction = 7;
+  optional int32 limit = 6;
+  optional string order_by = 7;
+  optional string order_direction = 8;
 }
 message WithsQueryRow {
   required int64 versionpin_id = 1;

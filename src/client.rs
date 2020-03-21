@@ -411,6 +411,8 @@ impl Client {
             role,
             platform,
             site,
+            //search_mode,
+            limit,
             order_by,
             order_direction,
         } = options;
@@ -421,6 +423,8 @@ impl Client {
             role,
             platform,
             site,
+            //search_mode,
+            limit,
             order_by,
             order_direction,
         });
@@ -1091,6 +1095,8 @@ pub mod get_withs {
         pub role: Option<String>,
         pub platform: Option<String>,
         pub site: Option<String>,
+        //pub search_mode: Option<String>,
+        pub limit: Option<i32>,
         pub order_by: Option<String>,
         pub order_direction: Option<String>,
     }
@@ -1106,7 +1112,7 @@ pub mod get_withs {
         /// * `role`
         /// * `platform`
         /// * `site`
-        /// * `search_mode`
+        // /// * `search_mode`
         /// * `order_by` - the optional direction to order by
         ///
         /// # Returns
@@ -1119,6 +1125,8 @@ pub mod get_withs {
                 role: None,
                 platform: None,
                 site: None,
+                //search_mode: None,
+                limit: None,
                 order_by: None,
                 order_direction: None,
             }
@@ -1143,6 +1151,14 @@ pub mod get_withs {
         }
         pub fn site_opt(mut self, site: Option<String>) -> Self {
             self.site = site;
+            self
+        }
+        // pub fn search_mode_opt(mut self, search_mode: Option<String>) -> Self {
+        //     self.search_mode = search_mode;
+        //     self
+        // }
+        pub fn limit_opt(mut self, limit: Option<i32>) -> Self {
+            self.limit = limit;
             self
         }
         pub fn order_by_opt(mut self, order_by: Option<String>) -> Self {

@@ -108,9 +108,9 @@ pub enum PbFind {
         /// The site - defaults to 'any'.
         #[structopt(short = "S", long, display_order = 4)]
         site: Option<String>,
-        /// Search mode - ancestor (or down), exact, descendant (or up).
-        #[structopt(short, long = "search", display_order = 5)]
-        search_mode: Option<String>,
+        // /// Search mode - ancestor (or down), exact, descendant (or up).
+        // #[structopt(short, long = "search", display_order = 5)]
+        // search_mode: Option<String>,
         /// Limit the number of returned items.
         #[structopt(short, long, display_order = 6)]
         limit: Option<IdType>,
