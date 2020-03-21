@@ -14,6 +14,7 @@ service Packybara {
   rpc GetDistributions(DistributionsQueryRequest)
       returns (DistributionsQueryReply) {}
   rpc GetPkgCoords(PkgCoordsQueryRequest) returns (PkgCoordsQueryReply) {}
+  rpc GetWiths(WithsQueryRequest) returns (WithsQueryReply) {}
 }
 
 // GET VERSION PIN
@@ -177,3 +178,21 @@ message PkgCoordsQueryRow {
 
 message PkgCoordsQueryReply { repeated PkgCoordsQueryRow pkgcoords = 1; }
 //----------------------------------
+// find withs
+
+message WithsQueryRequest {
+  required string package = 1;
+  optional string level = 2;
+  optional string role = 3;
+  optional string platform = 4;
+  optional string site = 5;
+  optional string order_by = 6;
+  optional string order_direction = 7;
+}
+message WithsQueryRow {
+  required int64 versionpin_id = 1;
+  required string distribution = 2;
+  required Coords coords = 3;
+}
+message WithsQueryReply { repeated WithsQueryRow withs = 1; }
+//-------------------

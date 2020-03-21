@@ -1,6 +1,7 @@
 use log;
 use packybara::coords::Coords as PCoords;
 use packybara::db::find::versionpins::FindVersionPinsRow;
+use packybara::db::find::withs::FindWithsRow;
 use packybara::db::find_all::distributions::FindAllDistributionsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::packages::FindAllPackagesRow;
@@ -28,6 +29,7 @@ use crate::{
     SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
     VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
     VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
 };
 
 mod get_distributions;
@@ -40,6 +42,7 @@ mod get_sites;
 mod get_version_pin;
 mod get_version_pin_withs;
 mod get_version_pins;
+mod get_withs;
 
 #[derive(Debug)]
 pub struct PackybaraService {
@@ -161,5 +164,12 @@ impl Packybara for PackybaraService {
         request: Request<PkgCoordsQueryRequest>,
     ) -> Result<Response<PkgCoordsQueryReply>, Status> {
         get_pkgcoords::get_pkgcoords(&self, request).await
+    }
+
+    async fn get_withs(
+        &self,
+        request: Request<WithsQueryRequest>,
+    ) -> Result<Response<WithsQueryReply>, Status> {
+        get_withs::get_withs(&self, request).await
     }
 }

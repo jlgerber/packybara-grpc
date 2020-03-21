@@ -852,8 +852,8 @@ checksum = "2839e79665f131bdb5782e51f2c6c9599c133c6098982a54c794358bf432529c"
 
 [[package]]
 name = "packybara"
-version = "0.60.0"
-source = "git+https://github.com/jlgerber/packybara?tag=async_v0.60.0#8d7bb2e2b6a0deaf31ba21e6b7b7ea11aa2bb78c"
+version = "0.60.1"
+source = "git+https://github.com/jlgerber/packybara?tag=async_v0.60.1#aa1b5d35e20f2a3fafe93ce4e30d507e84a57db4"
 dependencies = [
  "async-trait",
  "chrono",
@@ -877,7 +877,7 @@ dependencies = [
 
 [[package]]
 name = "packybara-grpc"
-version = "0.13.0"
+version = "0.14.0"
 dependencies = [
  "log",
  "packybara",

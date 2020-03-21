@@ -117,6 +117,9 @@ pub enum PbFind {
         /// Provide one or more comma separated items to order the return by.
         #[structopt(short, long = "order-by", display_order = 7)]
         order_by: Option<String>,
+        /// Provide direction to search in
+        #[structopt(short = "D", long = "order-direction", display_order = 8)]
+        order_direction: Option<String>,
     },
     #[structopt(display_order = 5)]
     /// Search for pins. Discover what pin coordinates are being used.

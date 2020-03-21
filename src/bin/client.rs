@@ -39,9 +39,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbFind::VersionPinWiths { .. } => {
                 cmd::versionpin_withs::find(client, cmd).await?;
             }
-            // PbFind::Withs { .. } => {
-            //     cmd::withs::find(client, cmd).await?;
-            // }
+            PbFind::Withs { .. } => {
+                cmd::withs::find(client, cmd).await?;
+            }
             PbFind::Packages { .. } => {
                 cmd::packages::find(client, cmd).await?;
             }

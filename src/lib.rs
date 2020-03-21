@@ -8,7 +8,8 @@ pub use pb::{
     RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest, SitesQueryRow,
     VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
     VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
-    VersionPinsQueryRequest, VersionPinsQueryRow,
+    VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply, WithsQueryRequest,
+    WithsQueryRow,
 };
 
 pub mod pb {
