@@ -4,6 +4,7 @@ pub(crate) mod levels;
 pub(crate) mod packages;
 pub(crate) mod pkgcoords;
 pub(crate) mod platforms;
+pub(crate) mod revisions;
 pub(crate) mod roles;
 pub(crate) mod sites;
 pub(crate) mod versionpin;

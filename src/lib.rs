@@ -4,12 +4,12 @@ pub use pb::{
     Coords, DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow,
     LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply, PackagesQueryRequest,
     PackagesQueryRow, PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow,
-    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply,
-    RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest, SitesQueryRow,
-    VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
-    VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
-    VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply, WithsQueryRequest,
-    WithsQueryRow,
+    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply,
+    RevisionsQueryRequest, RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
+    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
+    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
+    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
 };
 
 pub mod pb {

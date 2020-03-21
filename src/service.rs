@@ -7,10 +7,12 @@ use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::packages::FindAllPackagesRow;
 use packybara::db::find_all::pkgcoords::FindAllPkgCoordsRow;
 use packybara::db::find_all::platforms::FindAllPlatformsRow;
+use packybara::db::find_all::revisions::FindAllRevisionsRow;
 use packybara::db::find_all::roles::FindAllRolesRow;
 use packybara::db::find_all::sites::FindAllSitesRow;
 use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
+
 use packybara::db::traits::*;
 use packybara::packrat::{Client, PackratDb};
 use packybara::LtreeSearchMode;
@@ -25,11 +27,12 @@ use crate::{
     DistributionsQueryRow, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow,
     PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow, Packybara, PackybaraServer,
     PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow, PlatformsQueryReply,
-    PlatformsQueryRequest, PlatformsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
-    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
-    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
-    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
-    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
+    PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply, RevisionsQueryRequest,
+    RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply,
+    SitesQueryRequest, SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest,
+    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
+    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply,
+    WithsQueryRequest, WithsQueryRow,
 };
 
 mod get_distributions;
@@ -37,6 +40,7 @@ mod get_levels;
 mod get_packages;
 mod get_pkgcoords;
 mod get_platforms;
+mod get_revisions;
 mod get_roles;
 mod get_sites;
 mod get_version_pin;
@@ -171,5 +175,12 @@ impl Packybara for PackybaraService {
         request: Request<WithsQueryRequest>,
     ) -> Result<Response<WithsQueryReply>, Status> {
         get_withs::get_withs(&self, request).await
+    }
+
+    async fn get_revisions(
+        &self,
+        request: Request<RevisionsQueryRequest>,
+    ) -> Result<Response<RevisionsQueryReply>, Status> {
+        get_revisions::get_revisions(&self, request).await
     }
 }

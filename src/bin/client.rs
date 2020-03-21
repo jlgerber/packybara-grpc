@@ -1,18 +1,29 @@
 use packybara_grpc::client as pbclient;
 mod cmd;
 use cmd::args::*;
+use env_logger;
+use env_logger::Env;
 use packybara_grpc::url_builder;
+use std::env;
 use structopt::StructOpt;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let opt = Pb::from_args();
+    if let Pb {
+        loglevel: Some(ref level),
+        ..
+    } = opt
+    {
+        env::set_var("RUST_LOG", level);
+    }
+    env_logger::from_env(Env::default().default_filter_or("warn")).init();
     let url = url_builder::UrlBuilder::new()
         .host(url_builder::Host::Localhost)
         .port(50051)
         .build(); //"http://[::1]:50051"
     let client = pbclient::Client::new(url).await?;
-    let Pb { crud, .. } = opt;
+    let Pb { loglevel, crud, .. } = opt;
     match crud {
         PbCrud::Find { cmd } => match cmd {
             PbFind::VersionPin { .. } => {
@@ -51,9 +62,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbFind::PkgCoords { .. } => {
                 cmd::pkgcoords::find(client, cmd).await?;
             }
-            // PbFind::Revisions { .. } => {
-            //     cmd::all_revisions::find(client, cmd).await?;
-            // }
+            PbFind::Revisions { .. } => {
+                cmd::revisions::find(client, cmd).await?;
+            }
             // PbFind::Changes { .. } => {
             //     cmd::all_changes::find(client, cmd).await?;
             // }

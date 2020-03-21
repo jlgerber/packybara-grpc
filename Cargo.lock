@@ -852,8 +852,8 @@ checksum = "2839e79665f131bdb5782e51f2c6c9599c133c6098982a54c794358bf432529c"
 
 [[package]]
 name = "packybara"
-version = "0.61.0"
-source = "git+https://github.com/jlgerber/packybara?tag=async_v0.61.0#e55f5f2098d2e2206631ae2dd25b16158cb19e66"
+version = "0.63.1"
+source = "git+https://github.com/jlgerber/packybara?tag=async_v0.63.1#8e33ccfe27351e5843d20235daa5bc8472ee6fac"
 dependencies = [
  "async-trait",
  "chrono",
@@ -877,8 +877,10 @@ dependencies = [
 
 [[package]]
 name = "packybara-grpc"
-version = "0.14.0"
+version = "0.15.0"
 dependencies = [
+ "chrono",
+ "env_logger",
  "log",
  "packybara",
  "prettytable-rs",
