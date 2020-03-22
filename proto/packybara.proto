@@ -17,6 +17,8 @@ service Packybara {
   rpc GetWiths(WithsQueryRequest) returns (WithsQueryReply) {}
   rpc GetRevisions(RevisionsQueryRequest) returns (RevisionsQueryReply) {}
   rpc GetChanges(ChangesQueryRequest) returns (ChangesQueryReply) {}
+
+  rpc AddPackage(PackageAddRequest) returns (PackageAddReply) {}
 }
 
 // GET VERSION PIN
@@ -231,4 +233,11 @@ message ChangesQueryRow {
   required string new = 7;
 }
 message ChangesQueryReply { repeated ChangesQueryRow changes = 1; }
-//---------------------------
+//--------------------------
+// add package
+message PackageAddRequest {
+  repeated string names = 1;
+  optional string comment = 2;
+}
+
+message PackageAddReply { required int32 new_packages = 1; }

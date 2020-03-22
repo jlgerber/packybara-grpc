@@ -27,7 +27,6 @@ use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
 use std::convert::TryFrom;
 use std::str::FromStr;
-use tokio_postgres::Transaction;
 use tonic::transport::{Channel, Endpoint};
 // this has some implications for applications that want to communicate
 // in multiple channels. If this becomes a requirement, we will have to

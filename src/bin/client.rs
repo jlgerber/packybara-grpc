@@ -73,8 +73,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         },
         PbCrud::Add { cmd } => match cmd {
             PbAdd::Packages { .. } => {
-                let tx = client.transaction().await?;
-                cmd::all_packages::add(tx, cmd).await?;
+                cmd::packages::add(cmd).await?;
             }
             //     PbAdd::Levels { .. } => {
             //         let tx = client.transaction().await?;
