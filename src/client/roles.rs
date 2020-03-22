@@ -59,4 +59,38 @@ pub mod get_roles {
             self
         }
     }
+
+    use super::*;
+
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_roles::Options,
+    ) -> Result<Vec<FindAllRolesRow>, Box<dyn std::error::Error>> {
+        let get_roles::Options {
+            role,
+            category,
+            order_by,
+            order_direction,
+            limit,
+        } = options;
+        let request = tonic::Request::new(RolesQueryRequest {
+            role,
+            category,
+            order_by,
+            order_direction,
+            limit: limit.map(|x| x as i32),
+        });
+        let response = grpc_client.client.get_roles(request).await?;
+        let RolesQueryReply { roles } = response.into_inner();
+
+        let results = roles
+            .into_iter()
+            .map(|role| {
+                let RolesQueryRow { role, category } = role;
+                FindAllRolesRow::from_parts(&role, &category)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
 }

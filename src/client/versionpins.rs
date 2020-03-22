@@ -146,4 +146,72 @@ pub mod get_versionpins {
             self
         }
     }
+
+    use super::*;
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_versionpins::Options,
+    ) -> Result<Vec<FindAllVersionPinsRow>, Box<dyn std::error::Error>> {
+        let get_versionpins::Options {
+            package,
+            version,
+            level,
+            role,
+            platform,
+            site,
+            isolate_facility,
+            search_mode,
+            order_by,
+            order_direction,
+        } = options;
+        let request = tonic::Request::new(VersionPinsQueryRequest {
+            package,
+            version,
+            level,
+            role,
+            platform,
+            site,
+            isolate_facility,
+            search_mode,
+            order_by,
+            order_direction,
+            limit: None,
+        });
+        let response = grpc_client.client.get_version_pins(request).await?;
+        let VersionPinsQueryReply { vpins } = response.into_inner();
+
+        let results = vpins
+            .into_iter()
+            .map(|vpin| {
+                let VersionPinsQueryRow {
+                    versionpin_id,
+                    distribution_id,
+                    pkgcoord_id,
+                    distribution,
+                    coords:
+                        Coords {
+                            level,
+                            role,
+                            platform,
+                            site,
+                        },
+                    withs,
+                } = vpin;
+                let withs = if withs.len() > 0 { Some(withs) } else { None };
+                FindAllVersionPinsRow::from_parts(
+                    versionpin_id as i32,
+                    distribution_id as i32,
+                    pkgcoord_id as i32,
+                    &distribution,
+                    &level,
+                    &role,
+                    &platform,
+                    &site,
+                    withs,
+                )
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
 }

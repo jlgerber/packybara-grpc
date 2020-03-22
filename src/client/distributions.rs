@@ -53,4 +53,37 @@ pub mod get_distributions {
         //     self
         // }
     }
+
+    use super::*;
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_distributions::Options,
+    ) -> Result<Vec<FindAllDistributionsRow>, Box<dyn std::error::Error>> {
+        let get_distributions::Options {
+            package,
+            version,
+            order_direction,
+        } = options;
+        let request = tonic::Request::new(DistributionsQueryRequest {
+            package,
+            version,
+            order_direction,
+        });
+        let response = grpc_client.client.get_distributions(request).await?;
+        let DistributionsQueryReply { distributions } = response.into_inner();
+
+        let results = distributions
+            .into_iter()
+            .map(|name| {
+                let DistributionsQueryRow {
+                    id,
+                    package,
+                    version,
+                } = name;
+                FindAllDistributionsRow::from_parts(id as i32, &package, &version)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
 }

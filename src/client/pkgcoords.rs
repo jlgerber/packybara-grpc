@@ -71,4 +71,49 @@ pub mod get_pkgcoords {
             self
         }
     }
+    use super::*;
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_pkgcoords::Options,
+    ) -> Result<Vec<FindAllPkgCoordsRow>, Box<dyn std::error::Error>> {
+        let get_pkgcoords::Options {
+            package,
+            level,
+            role,
+            platform,
+            site,
+            search_mode,
+            order_by,
+        } = options;
+        let request = tonic::Request::new(PkgCoordsQueryRequest {
+            package,
+            level,
+            role,
+            platform,
+            site,
+            search_mode,
+            order_by,
+        });
+        let response = grpc_client.client.get_pkg_coords(request).await?;
+        let PkgCoordsQueryReply { pkgcoords } = response.into_inner();
+
+        let results = pkgcoords
+            .into_iter()
+            .map(|coord| {
+                let PkgCoordsQueryRow {
+                    id,
+                    package,
+                    level,
+                    role,
+                    platform,
+                    site,
+                } = coord;
+                FindAllPkgCoordsRow::from_parts(
+                    id as i32, &package, &level, &role, &platform, &site,
+                )
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
 }

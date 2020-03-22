@@ -83,4 +83,63 @@ pub mod get_withs {
             self
         }
     }
+
+    use super::*;
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_withs::Options,
+    ) -> Result<Vec<FindWithsRow>, Box<dyn std::error::Error>> {
+        let get_withs::Options {
+            package,
+            level,
+            role,
+            platform,
+            site,
+            //search_mode,
+            limit,
+            order_by,
+            order_direction,
+        } = options;
+        let package = package.unwrap_or("UNKNOWN".to_string());
+        let request = tonic::Request::new(WithsQueryRequest {
+            package,
+            level,
+            role,
+            platform,
+            site,
+            //search_mode,
+            limit,
+            order_by,
+            order_direction,
+        });
+        let response = grpc_client.client.get_withs(request).await?;
+        let WithsQueryReply { withs } = response.into_inner();
+
+        let results = withs
+            .into_iter()
+            .map(|with| {
+                let WithsQueryRow {
+                    versionpin_id,
+                    distribution,
+                    coords:
+                        Coords {
+                            level,
+                            role,
+                            platform,
+                            site,
+                        },
+                } = with;
+                FindWithsRow::from_parts(
+                    versionpin_id as i32,
+                    &distribution,
+                    &level,
+                    &role,
+                    &platform,
+                    &site,
+                )
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
 }

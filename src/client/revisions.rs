@@ -1,6 +1,7 @@
 use super::*;
 
 pub mod get_revisions {
+    use super::*;
     /// Encapsulate the query parameters
     pub struct Options {
         pub id: Option<i64>,
@@ -64,5 +65,59 @@ pub mod get_revisions {
             self.limit = limit;
             self
         }
+    }
+
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_revisions::Options,
+    ) -> Result<Vec<FindAllRevisionsRow>, Box<dyn std::error::Error>> {
+        let get_revisions::Options {
+            id,
+            transaction_id,
+            author,
+            order_by,
+            order_direction,
+            limit,
+        } = options;
+        let request = tonic::Request::new(RevisionsQueryRequest {
+            id,
+            transaction_id,
+            author,
+            order_by,
+            order_direction,
+            limit,
+        });
+        let response = grpc_client.client.get_revisions(request).await?;
+        let RevisionsQueryReply { revisions } = response.into_inner();
+
+        let results = revisions
+            .into_iter()
+            .map(|rev| {
+                let RevisionsQueryRow {
+                    id,
+                    transaction_id,
+                    author,
+                    comment,
+                    datetime,
+                } = rev;
+                //println!("DATETIME {}", datetime);
+                //2020-01-25 19:23:26.672258 -08:00
+                //let dt = DateTime::<Utc>::from_utc(NaiveDateTime::from_timestamp(61, 0), Utc);
+                //let dt: DateTime<Local> = DateTime::from(dt);
+                let dt = DateTime::parse_from_str(&datetime, "%F %T%.3f %z")
+                    .expect("unable to unwrap time");
+                let dt: DateTime<Local> = DateTime::from(dt);
+                FindAllRevisionsRow::from_parts(
+                    id as i32,
+                    transaction_id,
+                    &author,
+                    dt,
+                    //&datetime,
+                    &comment,
+                )
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
     }
 }

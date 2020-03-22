@@ -43,4 +43,26 @@ pub mod get_packages {
         //     self
         // }
     }
+
+    use super::*;
+
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_packages::Options,
+    ) -> Result<Vec<FindAllPackagesRow>, Box<dyn std::error::Error>> {
+        let get_packages::Options { name } = options;
+        let request = tonic::Request::new(PackagesQueryRequest { name });
+        let response = grpc_client.client.get_packages(request).await?;
+        let PackagesQueryReply { names } = response.into_inner();
+
+        let results = names
+            .into_iter()
+            .map(|name| {
+                let PackagesQueryRow { name } = name;
+                FindAllPackagesRow::from_parts(&name)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
 }

@@ -30,4 +30,26 @@ pub mod get_sites {
             self
         }
     }
+
+    use super::*;
+
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_sites::Options,
+    ) -> Result<Vec<FindAllSitesRow>, Box<dyn std::error::Error>> {
+        let get_sites::Options { name } = options;
+        let request = tonic::Request::new(SitesQueryRequest { name });
+        let response = grpc_client.client.get_sites(request).await?;
+        let SitesQueryReply { names } = response.into_inner();
+
+        let results = names
+            .into_iter()
+            .map(|site| {
+                let SitesQueryRow { name } = site;
+                FindAllSitesRow::from_parts(&name)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
 }

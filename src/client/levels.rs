@@ -51,4 +51,36 @@ pub mod get_levels {
             self
         }
     }
+
+    use super::*;
+
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_levels::Options,
+    ) -> Result<Vec<FindAllLevelsRow>, Box<dyn std::error::Error>> {
+        let get_levels::Options {
+            level,
+            show,
+            depth,
+            order_by,
+        } = options;
+        let request = tonic::Request::new(LevelsQueryRequest {
+            level,
+            show,
+            depth: depth.map(|x| x as u32),
+            order_by,
+        });
+        let response = grpc_client.client.get_levels(request).await?;
+        let LevelsQueryReply { levels } = response.into_inner();
+
+        let results = levels
+            .into_iter()
+            .map(|level| {
+                let LevelsQueryRow { level, show } = level;
+                FindAllLevelsRow::from_parts(&level, &show)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
 }

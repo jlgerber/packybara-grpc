@@ -105,4 +105,51 @@ pub mod get_versionpin {
             self
         }
     }
+
+    use super::*;
+    pub(crate) async fn cmd(
+        grpc_client: &mut Client,
+        options: get_versionpin::Options,
+    ) -> Result<FindVersionPinsRow, Box<dyn std::error::Error>> {
+        let get_versionpin::Options {
+            package,
+            level,
+            role,
+            platform,
+            site,
+        } = options;
+        let request = tonic::Request::new(VersionPinQueryRequest {
+            package,
+            level,
+            role,
+            platform,
+            site,
+        });
+        let response = grpc_client.client.get_version_pin(request).await?;
+        let VersionPinQueryReply {
+            versionpin_id,
+            distribution,
+            coords:
+                Coords {
+                    level,
+                    role,
+                    platform,
+                    site,
+                },
+            withs,
+        } = response.into_inner();
+
+        let withs = if withs.len() > 0 { Some(withs) } else { None };
+
+        let response = FindVersionPinsRow::from_parts(
+            versionpin_id as i32,
+            distribution.as_str(),
+            level.as_str(),
+            role.as_str(),
+            platform.as_str(),
+            &site,
+            withs,
+        );
+        Ok(response)
+    }
 }

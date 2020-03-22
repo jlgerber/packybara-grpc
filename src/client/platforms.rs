@@ -51,4 +51,36 @@ pub mod get_platforms {
             self
         }
     }
+
+    use super::*;
+
+    pub async fn cmd(
+        grpc_client: &mut Client,
+        options: get_platforms::Options,
+    ) -> Result<Vec<FindAllPlatformsRow>, Box<dyn std::error::Error>> {
+        let get_platforms::Options {
+            name,
+            order_by,
+            order_direction,
+            limit,
+        } = options;
+        let request = tonic::Request::new(PlatformsQueryRequest {
+            name,
+            order_by,
+            order_direction,
+            limit: limit.map(|x| x as i32),
+        });
+        let response = grpc_client.client.get_platforms(request).await?;
+        let PlatformsQueryReply { names } = response.into_inner();
+
+        let results = names
+            .into_iter()
+            .map(|name| {
+                let PlatformsQueryRow { name } = name;
+                FindAllPlatformsRow::from_parts(&name)
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
 }
