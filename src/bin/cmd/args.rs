@@ -1,5 +1,7 @@
 pub mod find;
 pub use find::*;
+pub mod add;
+pub use add::*;
 
 use structopt::StructOpt;
 
@@ -32,13 +34,13 @@ pub enum PbCrud {
     //     #[structopt(subcommand)]
     //     cmd: PbSet,
     // },
-    // /// Create new things in the database.
-    // #[structopt(display_order = 3)]
-    // Add {
-    //     /// Read subcommands
-    //     #[structopt(subcommand)]
-    //     cmd: PbAdd,
-    // },
+    /// Create new things in the database.
+    #[structopt(display_order = 3)]
+    Add {
+        /// Read subcommands
+        #[structopt(subcommand)]
+        cmd: PbAdd,
+    },
     // /// Remove things from the database.
     // #[structopt(display_order = 4)]
     // Delete {},

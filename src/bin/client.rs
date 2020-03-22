@@ -71,32 +71,33 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             _ => println!("Not Implemented"),
         },
-        // PbCrud::Add { cmd } => match cmd {
-        //     PbAdd::Packages { .. } => {
-        //         let tx = client.transaction().await?;
-        //         cmd::all_packages::add(tx, cmd).await?;
-        //     }
-        //     PbAdd::Levels { .. } => {
-        //         let tx = client.transaction().await?;
-        //         cmd::all_levels::add(tx, cmd).await?;
-        //     }
-        //     PbAdd::Roles { .. } => {
-        //         let tx = client.transaction().await?;
-        //         cmd::all_roles::add(tx, cmd).await?;
-        //     }
-        //     PbAdd::Platforms { .. } => {
-        //         let tx = client.transaction().await?;
-        //         cmd::all_platforms::add(tx, cmd).await?;
-        //     }
-        //     PbAdd::Withs { .. } => {
-        //         let tx = client.transaction().await?;
-        //         cmd::withs::add(tx, cmd).await?;
-        //     }
-        //     PbAdd::VersionPins { .. } => {
-        //         let tx = client.transaction().await?;
-        //         cmd::versionpins::add(tx, cmd).await?;
-        //     }
-        // },
+        PbCrud::Add { cmd } => match cmd {
+            PbAdd::Packages { .. } => {
+                let tx = client.transaction().await?;
+                cmd::all_packages::add(tx, cmd).await?;
+            }
+            //     PbAdd::Levels { .. } => {
+            //         let tx = client.transaction().await?;
+            //         cmd::all_levels::add(tx, cmd).await?;
+            //     }
+            //     PbAdd::Roles { .. } => {
+            //         let tx = client.transaction().await?;
+            //         cmd::all_roles::add(tx, cmd).await?;
+            //     }
+            //     PbAdd::Platforms { .. } => {
+            //         let tx = client.transaction().await?;
+            //         cmd::all_platforms::add(tx, cmd).await?;
+            //     }
+            //     PbAdd::Withs { .. } => {
+            //         let tx = client.transaction().await?;
+            //         cmd::withs::add(tx, cmd).await?;
+            //     }
+            //     PbAdd::VersionPins { .. } => {
+            //         let tx = client.transaction().await?;
+            //         cmd::versionpins::add(tx, cmd).await?;
+            //     }
+            _ => println!("Not Implemented"),
+        },
         // PbCrud::Set { cmd } => match cmd {
         //     PbSet::VersionPins { .. } => {
         //         let tx = client.transaction().await?;
