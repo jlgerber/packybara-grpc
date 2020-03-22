@@ -23,7 +23,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .port(50051)
         .build(); //"http://[::1]:50051"
     let client = pbclient::Client::new(url).await?;
-    let Pb { loglevel, crud, .. } = opt;
+    let Pb { crud, .. } = opt;
+
     match crud {
         PbCrud::Find { cmd } => match cmd {
             PbFind::VersionPin { .. } => {
@@ -65,9 +66,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbFind::Revisions { .. } => {
                 cmd::revisions::find(client, cmd).await?;
             }
-            // PbFind::Changes { .. } => {
-            //     cmd::all_changes::find(client, cmd).await?;
-            // }
+            PbFind::Changes { .. } => {
+                cmd::changes::find(client, cmd).await?;
+            }
             _ => println!("Not Implemented"),
         },
         // PbCrud::Add { cmd } => match cmd {

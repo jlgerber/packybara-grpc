@@ -1,5 +1,4 @@
 use super::*;
-use crate::utils::extract_coords;
 
 pub(crate) async fn get_withs(
     service: &PackybaraService,

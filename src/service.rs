@@ -2,6 +2,7 @@ use log;
 use packybara::coords::Coords as PCoords;
 use packybara::db::find::versionpins::FindVersionPinsRow;
 use packybara::db::find::withs::FindWithsRow;
+use packybara::db::find_all::changes::FindAllChangesRow;
 use packybara::db::find_all::distributions::FindAllDistributionsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::packages::FindAllPackagesRow;
@@ -23,18 +24,19 @@ use tonic::transport::Server;
 use tonic::{Code, Request, Response, Status};
 
 use crate::{
-    url::GrpcUrl, Coords, DistributionsQueryReply, DistributionsQueryRequest,
-    DistributionsQueryRow, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow,
-    PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow, Packybara, PackybaraServer,
-    PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow, PlatformsQueryReply,
-    PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply, RevisionsQueryRequest,
-    RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply,
-    SitesQueryRequest, SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest,
-    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
-    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply,
-    WithsQueryRequest, WithsQueryRow,
+    url::GrpcUrl, ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords,
+    DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply,
+    LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow,
+    Packybara, PackybaraServer, PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow,
+    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply,
+    RevisionsQueryRequest, RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
+    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
+    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
+    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
 };
 
+mod get_changes;
 mod get_distributions;
 mod get_levels;
 mod get_packages;
@@ -182,5 +184,12 @@ impl Packybara for PackybaraService {
         request: Request<RevisionsQueryRequest>,
     ) -> Result<Response<RevisionsQueryReply>, Status> {
         get_revisions::get_revisions(&self, request).await
+    }
+
+    async fn get_changes(
+        &self,
+        request: Request<ChangesQueryRequest>,
+    ) -> Result<Response<ChangesQueryReply>, Status> {
+        get_changes::get_changes(&self, request).await
     }
 }

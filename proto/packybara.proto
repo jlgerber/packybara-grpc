@@ -16,6 +16,7 @@ service Packybara {
   rpc GetPkgCoords(PkgCoordsQueryRequest) returns (PkgCoordsQueryReply) {}
   rpc GetWiths(WithsQueryRequest) returns (WithsQueryReply) {}
   rpc GetRevisions(RevisionsQueryRequest) returns (RevisionsQueryReply) {}
+  rpc GetChanges(ChangesQueryRequest) returns (ChangesQueryReply) {}
 }
 
 // GET VERSION PIN
@@ -216,3 +217,18 @@ message RevisionsQueryRow {
   required string datetime = 5;
 }
 message RevisionsQueryReply { repeated RevisionsQueryRow revisions = 1; }
+//-------------------------
+// Find Changes
+
+message ChangesQueryRequest { optional int64 transaction_id = 1; }
+message ChangesQueryRow {
+  required int64 id = 1;
+  required int64 transaction_id = 2;
+  required string action = 3;
+  required Coords coords = 4;
+  required string package = 5;
+  optional string old = 6;
+  required string new = 7;
+}
+message ChangesQueryReply { repeated ChangesQueryRow changes = 1; }
+//---------------------------

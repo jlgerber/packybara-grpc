@@ -1,18 +1,20 @@
 use crate::{
-    url as grpcurl, Coords, DistributionsQueryReply, DistributionsQueryRequest,
-    DistributionsQueryRow, LevelsQueryReply, LevelsQueryRequest, LevelsQueryRow,
-    PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow, PackybaraClient,
-    PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow, PlatformsQueryReply,
-    PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply, RevisionsQueryRequest,
-    RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply,
-    SitesQueryRequest, SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest,
-    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
-    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply,
-    WithsQueryRequest, WithsQueryRow,
+    url as grpcurl, ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords,
+    DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply,
+    LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow,
+    PackybaraClient, PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow,
+    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply,
+    RevisionsQueryRequest, RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
+    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
+    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
+    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
 };
-use chrono::{DateTime, FixedOffset, Local, NaiveDateTime, TimeZone, Utc};
+use chrono::{DateTime, Local};
 use packybara::db::find::versionpins::FindVersionPinsRow;
 use packybara::db::find::withs::FindWithsRow;
+use packybara::db::find_all::changes::ChangeAction;
+use packybara::db::find_all::changes::FindAllChangesRow;
 use packybara::db::find_all::distributions::FindAllDistributionsRow;
 use packybara::db::find_all::levels::FindAllLevelsRow;
 use packybara::db::find_all::packages::FindAllPackagesRow;
@@ -24,6 +26,7 @@ use packybara::db::find_all::sites::FindAllSitesRow;
 use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
 use std::convert::TryFrom;
+use std::str::FromStr;
 use tonic::transport::{Channel, Endpoint};
 
 // this has some implications for applications that want to communicate
@@ -509,6 +512,57 @@ impl Client {
                     dt,
                     //&datetime,
                     &comment,
+                )
+            })
+            .collect::<Vec<_>>();
+
+        Ok(results)
+    }
+
+    pub async fn get_changes(
+        &mut self,
+        options: get_changes::Options,
+    ) -> Result<Vec<FindAllChangesRow>, Box<dyn std::error::Error>> {
+        let get_changes::Options { transaction_id } = options;
+        let request = tonic::Request::new(ChangesQueryRequest { transaction_id });
+        let response = self.client.get_changes(request).await?;
+        let ChangesQueryReply { changes } = response.into_inner();
+
+        let results = changes
+            .into_iter()
+            .map(|chng| {
+                let ChangesQueryRow {
+                    id,
+                    transaction_id,
+                    action,
+                    coords:
+                        Coords {
+                            level,
+                            role,
+                            platform,
+                            site,
+                        },
+                    package,
+                    old,
+                    new,
+                } = chng;
+                let change_action = ChangeAction::from_str(&action)
+                    .expect("could not convert to action to ChangeAction");
+                let old = old.unwrap_or("".to_string());
+                //let new = Distribution::new(new);
+                let action = change_action.to_string();
+
+                FindAllChangesRow::from_parts(
+                    id,
+                    transaction_id,
+                    &action,
+                    &level,
+                    &role,
+                    &platform,
+                    &site,
+                    &package,
+                    &old,
+                    &new,
                 )
             })
             .collect::<Vec<_>>();
@@ -1291,6 +1345,41 @@ pub mod get_revisions {
         }
         pub fn limit_opt(mut self, limit: Option<i32>) -> Self {
             self.limit = limit;
+            self
+        }
+    }
+}
+pub mod get_changes {
+    /// Encapsulate the query parameters
+    pub struct Options {
+        pub transaction_id: Option<i64>,
+    }
+
+    impl Options {
+        /// New up an instance of get_pkgcoords::Options given a name, order_by
+        /// order_direction, and limit
+        ///
+        /// # Arguments
+        ///
+        /// * `name` - the optional name of the platform
+        /// * `level` - the optional field to level by
+        /// * `role`
+        /// * `platform`
+        /// * `site`
+        // /// * `search_mode`
+        /// * `order_by` - the optional direction to order by
+        ///
+        /// # Returns
+        ///
+        /// * Option instance
+        pub fn new() -> Self {
+            Self {
+                transaction_id: None,
+            }
+        }
+
+        pub fn transaction_id_opt(mut self, transaction_id: Option<i64>) -> Self {
+            self.transaction_id = transaction_id;
             self
         }
     }
