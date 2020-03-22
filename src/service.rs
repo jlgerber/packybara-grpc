@@ -36,19 +36,19 @@ use crate::{
     WithsQueryReply, WithsQueryRequest, WithsQueryRow,
 };
 
-mod get_changes;
-mod get_distributions;
-mod get_levels;
-mod get_packages;
-mod get_pkgcoords;
-mod get_platforms;
-mod get_revisions;
-mod get_roles;
-mod get_sites;
-mod get_version_pin;
-mod get_version_pin_withs;
-mod get_version_pins;
-mod get_withs;
+mod changes;
+mod distributions;
+mod levels;
+mod packages;
+mod pkgcoords;
+mod platforms;
+mod revisions;
+mod roles;
+mod sites;
+mod version_pin;
+mod version_pin_withs;
+mod version_pins;
+mod withs;
 
 #[derive(Debug)]
 pub struct PackybaraService {
@@ -106,90 +106,90 @@ impl Packybara for PackybaraService {
         &self,
         request: Request<VersionPinQueryRequest>,
     ) -> Result<Response<VersionPinQueryReply>, Status> {
-        get_version_pin::get_version_pin(&self, request).await
+        version_pin::get_version_pin(&self, request).await
     }
 
     async fn get_version_pins(
         &self,
         request: Request<VersionPinsQueryRequest>,
     ) -> Result<Response<VersionPinsQueryReply>, Status> {
-        get_version_pins::get_version_pins(&self, request).await
+        version_pins::get_version_pins(&self, request).await
     }
 
     async fn get_version_pin_withs(
         &self,
         request: Request<VersionPinWithsQueryRequest>,
     ) -> Result<Response<VersionPinWithsQueryReply>, Status> {
-        get_version_pin_withs::get_version_pin_withs(&self, request).await
+        version_pin_withs::get_version_pin_withs(&self, request).await
         //Err(Status::new(Code::Internal, "not implemented"))
     }
     async fn get_levels(
         &self,
         request: Request<LevelsQueryRequest>,
     ) -> Result<Response<LevelsQueryReply>, Status> {
-        get_levels::get_levels(&self, request).await
+        levels::get_levels(&self, request).await
         //Err(Status::new(Code::Internal, "not implemented"))
     }
     async fn get_roles(
         &self,
         request: Request<RolesQueryRequest>,
     ) -> Result<Response<RolesQueryReply>, Status> {
-        get_roles::get_roles(&self, request).await
+        roles::get_roles(&self, request).await
         //Err(Status::new(Code::Internal, "not implemented"))
     }
     async fn get_sites(
         &self,
         request: Request<SitesQueryRequest>,
     ) -> Result<Response<SitesQueryReply>, Status> {
-        get_sites::get_sites(&self, request).await
+        sites::get_sites(&self, request).await
         //Err(Status::new(Code::Internal, "not implemented"))
     }
     async fn get_platforms(
         &self,
         request: Request<PlatformsQueryRequest>,
     ) -> Result<Response<PlatformsQueryReply>, Status> {
-        get_platforms::get_platforms(&self, request).await
+        platforms::get_platforms(&self, request).await
         //Err(Status::new(Code::Internal, "not implemented"))
     }
     async fn get_packages(
         &self,
         request: Request<PackagesQueryRequest>,
     ) -> Result<Response<PackagesQueryReply>, Status> {
-        get_packages::get_packages(&self, request).await
+        packages::get_packages(&self, request).await
     }
 
     async fn get_distributions(
         &self,
         request: Request<DistributionsQueryRequest>,
     ) -> Result<Response<DistributionsQueryReply>, Status> {
-        get_distributions::get_distributions(&self, request).await
+        distributions::get_distributions(&self, request).await
     }
 
     async fn get_pkg_coords(
         &self,
         request: Request<PkgCoordsQueryRequest>,
     ) -> Result<Response<PkgCoordsQueryReply>, Status> {
-        get_pkgcoords::get_pkgcoords(&self, request).await
+        pkgcoords::get_pkgcoords(&self, request).await
     }
 
     async fn get_withs(
         &self,
         request: Request<WithsQueryRequest>,
     ) -> Result<Response<WithsQueryReply>, Status> {
-        get_withs::get_withs(&self, request).await
+        withs::get_withs(&self, request).await
     }
 
     async fn get_revisions(
         &self,
         request: Request<RevisionsQueryRequest>,
     ) -> Result<Response<RevisionsQueryReply>, Status> {
-        get_revisions::get_revisions(&self, request).await
+        revisions::get_revisions(&self, request).await
     }
 
     async fn get_changes(
         &self,
         request: Request<ChangesQueryRequest>,
     ) -> Result<Response<ChangesQueryReply>, Status> {
-        get_changes::get_changes(&self, request).await
+        changes::get_changes(&self, request).await
     }
 }
