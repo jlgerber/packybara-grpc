@@ -978,12 +978,13 @@ dependencies = [
 
 [[package]]
 name = "packybara-grpc"
-version = "0.20.0"
+version = "0.21.0"
 dependencies = [
  "chrono",
  "deadpool-postgres",
  "env_logger",
  "log",
+ "num_cpus",
  "packybara",
  "prettytable-rs",
  "prost",

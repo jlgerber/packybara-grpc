@@ -36,6 +36,7 @@ use tokio_postgres::NoTls;
 use tonic::transport::Server;
 use tonic::{Code, Request, Response, Status};
 
+use crate::DatabaseConfig;
 use crate::{PackagesAddReply, PackagesAddRequest};
 
 mod changes;
@@ -75,28 +76,16 @@ impl PackybaraService {
     ///     Ok(())
     /// }
     /// ```
-    pub async fn run(url: GrpcUrl) -> Result<(), Box<dyn std::error::Error>> {
-        // let (client, connection) = tokio_postgres::connect(
-        //     "host=127.0.0.1 user=postgres  dbname=packrat password=example port=5432",
-        //     NoTls,
-        // )
-        // .await?;
-        // tokio::spawn(async move {
-        //     if let Err(e) = connection.await {
-        //         eprintln!("connection error: {}", e);
-        //     }
-        // });
-        let mut pg_config = tokio_postgres::Config::new();
-        pg_config.user("postgres");
-        pg_config.dbname("packrat");
-        pg_config.password("example");
-        pg_config.port(5432);
-        pg_config.host("127.0.0.1");
+    pub async fn run(
+        url: GrpcUrl,
+        config: DatabaseConfig,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let pg_config = config.to_postgres_config();
         let mgr_config = ManagerConfig {
             recycling_method: RecyclingMethod::Fast,
         };
         let mgr = Manager::from_config(pg_config, NoTls, mgr_config);
-        let pool = Pool::new(mgr, 16);
+        let pool = Pool::new(mgr, config.pool_procs as usize);
         let addr = url.to_socket_addr()?; //"[::1]:50051".parse()?;
         let packy = PackybaraService::new(pool);
         Server::builder()

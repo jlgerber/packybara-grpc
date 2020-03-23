@@ -21,6 +21,8 @@ pub mod service;
 pub use service::PackybaraService;
 pub mod client_service;
 pub use client_service::ClientService;
+pub mod database_config;
 pub mod url;
 pub mod url_builder;
 pub mod utils;
+pub use database_config::DatabaseConfig;
