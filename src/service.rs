@@ -1,3 +1,10 @@
+//! The service module houses the PackybaraService, which implements the grpc
+//! Packybara service trait generated from the `packybara.proto` file, as well
+//! as providing a means to configure and run the service provided configuration data.
+//!
+//! # Examples
+//!
+//! For an example, see the bin/server.rs source code, which provides the actual executable
 use crate::{
     url::GrpcUrl, ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords,
     DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply,

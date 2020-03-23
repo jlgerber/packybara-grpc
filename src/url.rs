@@ -1,9 +1,10 @@
+//! url::GrpcUrl provies a newtype wrapper around url::Url that implements
+//! the ToSocketAddrs trait
 use std::borrow::Borrow;
 use std::fmt;
 use std::io;
 use std::net::SocketAddr;
 use std::net::ToSocketAddrs;
-//use std::net::{Ipv4Addr, Ipv6Addr};
 use std::vec;
 pub use url::Host as UrlHost;
 use url::Url;
@@ -13,6 +14,7 @@ pub struct GrpcUrl(Url);
 
 impl ToSocketAddrs for GrpcUrl {
     type Iter = vec::IntoIter<SocketAddr>;
+
     /// Convert GrpcUrl to socket addr
     fn to_socket_addrs(&self) -> io::Result<vec::IntoIter<SocketAddr>> {
         let part = format!(

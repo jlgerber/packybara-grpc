@@ -1,3 +1,16 @@
+//! # Introduction
+//!
+//! The packybara-grpc crate provides an async gRPC api for packybara with a postgres connection
+//! pool. The client provides a very similar experience to the non-gRPC api, returning the same data
+//! types as packybara.
+//!
+//! Packybara-grpc uses best-of-breed crates to provide a good performing implementation which should be able to
+//! sustain top throughput via async and connection pooling. If necessary, one may also mate the server
+//! with an independent connection pool like pgbouncer or pgpooler, although I have not yet done any
+//! tests.
+//!
+//! For gRPC, I use [Tonic](https://github.com/hyperium/tonic), which relies on `prost` for the protocol
+//! buffer implementation, `hyper` for http2, and `tokio` for the async implementation.
 pub use pb::packybara_client::PackybaraClient;
 pub use pb::packybara_server::{Packybara, PackybaraServer};
 pub use pb::{

@@ -1,3 +1,6 @@
+//! The client_service module provides ClientService, which encapsulates the underlying grpc server,
+//! and converts requests to and from protocol buffers, bringing the api in line with the packybara
+//! api.
 use crate::{
     url as grpcurl, ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords,
     DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply,

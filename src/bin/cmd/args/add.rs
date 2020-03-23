@@ -19,18 +19,27 @@ pub enum PbAdd {
     Levels {
         #[structopt(name = "LEVELS")]
         names: Vec<String>,
+        /// add a comment
+        #[structopt(short, long = "versionpin-id", display_order = 1)]
+        comment: Option<String>,
     },
     /// Add one or more roles to the database.
     #[structopt(display_order = 3, name = "roles")]
     Roles {
         #[structopt(name = "ROLES")]
         names: Vec<String>,
+        /// add a comment
+        #[structopt(short, long = "versionpin-id", display_order = 1)]
+        comment: Option<String>,
     },
     /// Add one or more roles to the database.
     #[structopt(display_order = 4, name = "platforms")]
     Platforms {
         #[structopt(name = "PLATFORMS")]
         names: Vec<String>,
+        /// add a comment
+        #[structopt(short, long = "versionpin-id", display_order = 1)]
+        comment: Option<String>,
     },
     /// Add one or more roles to the database.
     #[structopt(display_order = 5, name = "withs")]
@@ -41,6 +50,9 @@ pub enum PbAdd {
         comment: String,
         #[structopt(name = "WITHS")]
         withs: Vec<String>,
+        /// add a comment
+        #[structopt(short, long = "versionpin-id", display_order = 1)]
+        comment: Option<String>,
     },
     #[structopt(display_order = 6, name = "versionpins")]
     VersionPins {
@@ -54,5 +66,8 @@ pub enum PbAdd {
         platform: Option<String>,
         #[structopt(short, long, display_order = 5)]
         site: Option<String>,
+        /// add a comment
+        #[structopt(short, long = "versionpin-id", display_order = 1)]
+        comment: Option<String>,
     },
 }

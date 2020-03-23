@@ -1,5 +1,4 @@
 //! Utilites for building urls.
-//!
 
 pub use crate::url::*;
 use std::fmt;
