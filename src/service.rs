@@ -1,3 +1,16 @@
+use crate::{
+    url::GrpcUrl, ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords,
+    DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply,
+    LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow,
+    Packybara, PackybaraServer, PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow,
+    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply,
+    RevisionsQueryRequest, RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
+    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
+    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
+    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
+    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
+};
+use deadpool_postgres::{Manager, ManagerConfig, Pool, PoolError, RecyclingMethod};
 use log;
 use packybara::coords::Coords as PCoords;
 use packybara::db::find::versionpins::FindVersionPinsRow;
@@ -13,9 +26,9 @@ use packybara::db::find_all::roles::FindAllRolesRow;
 use packybara::db::find_all::sites::FindAllSitesRow;
 use packybara::db::find_all::versionpin_withs::FindAllWithsRow;
 use packybara::db::find_all::versionpins::FindAllVersionPinsRow;
-
 use packybara::db::traits::*;
 use packybara::packrat::{Client, PackratDb};
+use packybara::traits::TransactionHandler;
 use packybara::LtreeSearchMode;
 use packybara::{OrderDirection, SearchAttribute};
 use std::str::FromStr;
@@ -23,18 +36,7 @@ use tokio_postgres::NoTls;
 use tonic::transport::Server;
 use tonic::{Code, Request, Response, Status};
 
-use crate::{
-    url::GrpcUrl, ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords,
-    DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply,
-    LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow,
-    Packybara, PackybaraServer, PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow,
-    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply,
-    RevisionsQueryRequest, RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
-    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
-    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
-    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
-    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
-};
+use crate::{PackagesAddReply, PackagesAddRequest};
 
 mod changes;
 mod distributions;
@@ -50,14 +52,14 @@ mod version_pin_withs;
 mod version_pins;
 mod withs;
 
-#[derive(Debug)]
+//#[derive(Debug)]
 pub struct PackybaraService {
-    client: Client,
+    pool: Pool,
 }
 
 impl PackybaraService {
-    pub fn new(client: Client) -> Self {
-        Self { client }
+    pub fn new(pool: Pool) -> Self {
+        Self { pool }
     }
     // TODO:: Add configuration as run argument
     /// Run the server as a service.
@@ -74,18 +76,29 @@ impl PackybaraService {
     /// }
     /// ```
     pub async fn run(url: GrpcUrl) -> Result<(), Box<dyn std::error::Error>> {
-        let (client, connection) = tokio_postgres::connect(
-            "host=127.0.0.1 user=postgres  dbname=packrat password=example port=5432",
-            NoTls,
-        )
-        .await?;
-        tokio::spawn(async move {
-            if let Err(e) = connection.await {
-                eprintln!("connection error: {}", e);
-            }
-        });
+        // let (client, connection) = tokio_postgres::connect(
+        //     "host=127.0.0.1 user=postgres  dbname=packrat password=example port=5432",
+        //     NoTls,
+        // )
+        // .await?;
+        // tokio::spawn(async move {
+        //     if let Err(e) = connection.await {
+        //         eprintln!("connection error: {}", e);
+        //     }
+        // });
+        let mut pg_config = tokio_postgres::Config::new();
+        pg_config.user("postgres");
+        pg_config.dbname("packrat");
+        pg_config.password("example");
+        pg_config.port(5432);
+        pg_config.host("127.0.0.1");
+        let mgr_config = ManagerConfig {
+            recycling_method: RecyclingMethod::Fast,
+        };
+        let mgr = Manager::from_config(pg_config, NoTls, mgr_config);
+        let pool = Pool::new(mgr, 16);
         let addr = url.to_socket_addr()?; //"[::1]:50051".parse()?;
-        let packy = PackybaraService::new(client);
+        let packy = PackybaraService::new(pool);
         Server::builder()
             .add_service(PackybaraServer::new(packy))
             .serve(addr)
@@ -94,14 +107,18 @@ impl PackybaraService {
         Ok(())
     }
 
-    pub fn client(&self) -> &Client {
-        &self.client
+    pub async fn client(&self) -> Result<Client, PoolError> {
+        self.pool.get().await
+    }
+
+    pub async fn client_mut(&mut self) -> Result<Client, PoolError> {
+        self.pool.get().await
     }
 }
 
 #[tonic::async_trait]
 impl Packybara for PackybaraService {
-    /// Regrieve the version pin, given a VersionPinQueryRequest struct
+    // GET
     async fn get_version_pin(
         &self,
         request: Request<VersionPinQueryRequest>,
@@ -191,5 +208,19 @@ impl Packybara for PackybaraService {
         request: Request<ChangesQueryRequest>,
     ) -> Result<Response<ChangesQueryReply>, Status> {
         changes::get_changes(&self, request).await
+    }
+    //---------------------------------
+    //              ADD
+    //---------------------------------
+
+    async fn add_packages(
+        &self,
+        request: Request<PackagesAddRequest>,
+    ) -> Result<Response<PackagesAddReply>, Status> {
+        let client = self
+            .client()
+            .await
+            .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+        packages::add_packages(client, request).await
     }
 }

@@ -7,10 +7,16 @@ pub(crate) async fn get_changes(
     let mut pbd = PackratDb::new();
     // TODO: fix order_by in packybara or remove.
     let ChangesQueryRequest { transaction_id } = request.into_inner();
+
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+
     let results = pbd
         .find_all_changes()
         .transaction_id_opt(transaction_id)
-        .query(service.client())
+        .query(&client)
         .await
         .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
 

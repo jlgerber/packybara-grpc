@@ -41,8 +41,13 @@ pub(crate) async fn get_withs(
         }
     }
 
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+
     let intermediate_results = results
-        .query(service.client())
+        .query(&client)
         .await
         .map_err(|x| Status::new(Code::Internal, format!("{}", x)))?;
 

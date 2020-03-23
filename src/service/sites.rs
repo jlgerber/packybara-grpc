@@ -8,10 +8,15 @@ pub(crate) async fn get_sites(
     // TODO: fix order_by in packybara or remove.
     let SitesQueryRequest { name } = request.into_inner();
 
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+
     let results = pbd
         .find_all_sites()
         .name_opt(name.as_deref())
-        .query(service.client())
+        .query(&client)
         .await
         .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
 

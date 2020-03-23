@@ -17,12 +17,18 @@ pub(crate) async fn get_distributions(
         .as_ref()
         .map(|x| OrderDirection::from_str(x).ok())
         .flatten();
+
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+
     let results = pbd
         .find_all_distributions()
         .package_opt(package.as_deref())
         .version_opt(version.as_deref())
         .order_direction_opt(direction)
-        .query(service.client())
+        .query(&client)
         .await
         .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
 

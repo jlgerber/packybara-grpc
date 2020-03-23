@@ -53,8 +53,13 @@ pub(crate) async fn get_version_pins(
             log::warn!("unable to apply search direction request {} to query", dir);
         }
     }
+
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
     let intermediate_results = results
-        .query(service.client())
+        .query(&client)
         .await
         .map_err(|x| Status::new(Code::Internal, format!("{}", x)))?;
     let mut vpins = Vec::new();

@@ -22,6 +22,10 @@ pub(crate) async fn get_pkgcoords(
         .map(|v| SearchMode::try_from_str(&v).ok())
         .flatten();
 
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
     // let order_by = order_by.map(|d| {
     //     d.split('.')
     //         .filter_map(|o| OrderPkgCoordsBy::from_str(o).ok())
@@ -36,7 +40,7 @@ pub(crate) async fn get_pkgcoords(
         .site_opt(site.as_deref())
         .search_mode(search_mode.unwrap_or(SearchMode::Ltree(LtreeSearchMode::Ancestor)))
         .order_by_opt(order_by.as_deref())
-        .query(service.client())
+        .query(&client)
         .await
         .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
 

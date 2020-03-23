@@ -12,14 +12,15 @@ pub use pb::{
     VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply,
     WithsQueryRequest, WithsQueryRow,
 };
-
+pub use pb::{PackagesAddReply, PackagesAddRequest};
 pub mod pb {
     tonic::include_proto!("packybara");
 }
 
 pub mod service;
 pub use service::PackybaraService;
-pub mod client;
+pub mod client_service;
+pub use client_service::ClientService;
 pub mod url;
 pub mod url_builder;
 pub mod utils;

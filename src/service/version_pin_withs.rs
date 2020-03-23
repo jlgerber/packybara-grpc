@@ -8,9 +8,13 @@ pub(crate) async fn get_version_pin_withs(
 
     let VersionPinWithsQueryRequest { versionpin_id } = request.into_inner();
 
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
     let results = pbd
         .find_all_versionpin_withs(versionpin_id as i32)
-        .query(service.client())
+        .query(&client)
         .await
         .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
 

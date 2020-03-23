@@ -32,6 +32,15 @@ checksum = "a4c527152e37cf757a3f78aae5a06fbeefdb07ccc535c980a3208ee3060dd544"
 
 [[package]]
 name = "arrayvec"
+version = "0.4.12"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cd9fd44efafa8690358b7408d253adf110036b88f55672a933f01d616ad9b1b9"
+dependencies = [
+ "nodrop",
+]
+
+[[package]]
+name = "arrayvec"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cff77d8686867eceff3105329d4698d96c2391c176d5d03adc90c7389162b5b8"
@@ -135,7 +144,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d8fb2d74254a3a0b5cac33ac9f8ed0e44aa50378d9dbb2e5d83bd21ed1dc2c8a"
 dependencies = [
  "arrayref",
- "arrayvec",
+ "arrayvec 0.5.1",
  "constant_time_eq",
 ]
 
@@ -238,10 +247,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "config"
+version = "0.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "19b076e143e1d9538dde65da30f8481c2a6c44040edb8e02b9bf1351edb92ce3"
+dependencies = [
+ "lazy_static",
+ "nom 5.1.1",
+ "serde",
+]
+
+[[package]]
 name = "constant_time_eq"
 version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "245097e9a4535ee1e3e3931fcfcd55a796a44c643e8596ff6566d68f09b87bbc"
+
+[[package]]
+name = "crossbeam-queue"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c695eeca1e7173472a32221542ae469b3e9aac3a4fc81f7696bcad82029493db"
+dependencies = [
+ "cfg-if",
+ "crossbeam-utils",
+]
 
 [[package]]
 name = "crossbeam-utils"
@@ -284,6 +314,36 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b2466559f260f48ad25fe6317b3c8dac77b5bdb5763ac7d9d6103530663bc90"
 dependencies = [
  "memchr 2.3.3",
+]
+
+[[package]]
+name = "deadpool"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "38ce52b0b1ad88ed0b2be2bc3c65ad39dd1a5d9633b1a8a314fc017fbe0027d2"
+dependencies = [
+ "async-trait",
+ "config",
+ "crossbeam-queue",
+ "num_cpus",
+ "serde",
+ "tokio",
+]
+
+[[package]]
+name = "deadpool-postgres"
+version = "0.5.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "45575d9acf1535dddcfc5841fd8f1776287bdc328f8d9e76531f4dfd2eb9788f"
+dependencies = [
+ "async-trait",
+ "config",
+ "deadpool",
+ "futures",
+ "log",
+ "serde",
+ "tokio",
+ "tokio-postgres",
 ]
 
 [[package]]
@@ -702,8 +762,21 @@ source = "git+https://github.com/jlgerber/rust-lspec.git?tag=v0.10.0#021601f6de4
 dependencies = [
  "clap",
  "failure",
- "nom",
+ "nom 3.2.1",
  "serde",
+]
+
+[[package]]
+name = "lexical-core"
+version = "0.6.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d7043aa5c05dd34fb73b47acb8c3708eac428de4545ea3682ed2f11293ebd890"
+dependencies = [
+ "arrayvec 0.4.12",
+ "cfg-if",
+ "rustc_version",
+ "ryu",
+ "static_assertions",
 ]
 
 [[package]]
@@ -817,12 +890,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "nodrop"
+version = "0.1.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72ef4a56884ca558e5ddb05a1d1e7e1bfd9a68d9ed024c21704cc98872dae1bb"
+
+[[package]]
 name = "nom"
 version = "3.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "05aec50c70fd288702bcd93284a8444607f3292dbdf2a30de5ea5dcdbe72287b"
 dependencies = [
  "memchr 1.0.2",
+]
+
+[[package]]
+name = "nom"
+version = "5.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b471253da97532da4b61552249c521e01e736071f71c1a4f7ebbfbf0a06aad6"
+dependencies = [
+ "lexical-core",
+ "memchr 2.3.3",
+ "version_check",
 ]
 
 [[package]]
@@ -845,6 +935,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "num_cpus"
+version = "1.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "46203554f085ff89c235cd12f7075f3233af9b11ed7c9e16dfe2560d03313ce6"
+dependencies = [
+ "hermit-abi",
+ "libc",
+]
+
+[[package]]
 name = "opaque-debug"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -852,11 +952,12 @@ checksum = "2839e79665f131bdb5782e51f2c6c9599c133c6098982a54c794358bf432529c"
 
 [[package]]
 name = "packybara"
-version = "0.63.2"
-source = "git+https://github.com/jlgerber/packybara?tag=async_v0.63.2#c3d089b9873394261d098573e811a4b9c2a079ad"
+version = "0.64.1"
+source = "git+https://github.com/jlgerber/packybara?tag=async_v0.64.1#5a98f47fc8267e5d354aa1e7dfcede18ccda7db2"
 dependencies = [
  "async-trait",
  "chrono",
+ "deadpool-postgres",
  "env_logger",
  "failure",
  "itertools 0.9.0",
@@ -877,9 +978,10 @@ dependencies = [
 
 [[package]]
 name = "packybara-grpc"
-version = "0.17.0"
+version = "0.20.0"
 dependencies = [
  "chrono",
+ "deadpool-postgres",
  "env_logger",
  "log",
  "packybara",
@@ -1302,6 +1404,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4c691c0e608126e00913e33f0ccf3727d5fc84573623b8d65b2df340b5201783"
 
 [[package]]
+name = "rustc_version"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "138e3e0acb6c9fb258b19b67cb8abd63c00679d2851805ea151465464fe9030a"
+dependencies = [
+ "semver",
+]
+
+[[package]]
 name = "ryu"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1312,6 +1423,21 @@ name = "scopeguard"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
+
+[[package]]
+name = "semver"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d7eb9ef2c18661902cc47e535f9bc51b78acd254da71d375c2f6720d9a40403"
+dependencies = [
+ "semver-parser",
+]
+
+[[package]]
+name = "semver-parser"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 
 [[package]]
 name = "serde"
@@ -1410,6 +1536,12 @@ dependencies = [
  "quote 1.0.3",
  "syn 1.0.16",
 ]
+
+[[package]]
+name = "static_assertions"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7f3eb36b47e512f8f1c9e3d10c2c1965bc992bd9cdb024fa581e2194501c83d3"
 
 [[package]]
 name = "stringprep"

@@ -1,12 +1,12 @@
 use super::args::add::PbAdd;
 use super::args::find::PbFind;
-use packybara_grpc::client as pbclient;
-use packybara_grpc::client::Client;
+use packybara_grpc::client_service as pbclient;
+use packybara_grpc::client_service::ClientService;
 //use packybara_grpc::utils::truncate;
 use prettytable::{cell, format, row, table};
 
 pub(crate) async fn find(
-    mut client: Client,
+    mut client: ClientService,
     cmd: PbFind,
 ) -> Result<(), Box<dyn std::error::Error>> {
     if let PbFind::Packages { package } = cmd {
@@ -23,17 +23,18 @@ pub(crate) async fn find(
     Ok(())
 }
 
-pub(crate) async fn add(mut client: Client, cmd: PbFind) -> Result<(), Box<dyn std::error::Error>> {
+pub(crate) async fn add(
+    mut client: ClientService,
+    cmd: PbAdd,
+) -> Result<u64, Box<dyn std::error::Error>> {
     if let PbAdd::Packages { names, comment } = cmd {
         let username = whoami::username();
-        let results = client
-            .add_packages(
-                pbclient::add_packages::Options::new()
-                    .names(names)
-                    .user(username)
-                    .comment(comment.unwrap_or("Auto Comment - Package Added".to_string())),
-            )
-            .await?;
+        let opts = pbclient::add_packages::Options::new(names, username).comment_opt(Some(
+            comment.unwrap_or("Auto Comment - Package Added".to_string()),
+        ));
+
+        let results = client.add_packages(opts).await?;
+
         println!("{}", results);
         // let mut table = table!([bFg => "NAME"]);
         // for result in results {
@@ -41,6 +42,7 @@ pub(crate) async fn add(mut client: Client, cmd: PbFind) -> Result<(), Box<dyn s
         // }
         // table.set_format(*format::consts::FORMAT_CLEAN); //FORMAT_NO_LINESEP_WITH_TITLE  FORMAT_NO_BORDER_LINE_SEPARATOR
         // table.printstd();
+        return Ok(results);
     }
-    Ok(())
+    Ok(0)
 }

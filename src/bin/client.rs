@@ -1,4 +1,4 @@
-use packybara_grpc::client as pbclient;
+use packybara_grpc::client_service as pbclient;
 mod cmd;
 use cmd::args::*;
 use env_logger;
@@ -22,7 +22,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .host(url_builder::Host::Localhost)
         .port(50051)
         .build(); //"http://[::1]:50051"
-    let client = pbclient::Client::new(url).await?;
+    let client = pbclient::ClientService::new(url).await?;
     let Pb { crud, .. } = opt;
 
     match crud {
@@ -73,7 +73,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         },
         PbCrud::Add { cmd } => match cmd {
             PbAdd::Packages { .. } => {
-                cmd::packages::add(cmd).await?;
+                cmd::packages::add(client, cmd).await?;
             }
             //     PbAdd::Levels { .. } => {
             //         let tx = client.transaction().await?;

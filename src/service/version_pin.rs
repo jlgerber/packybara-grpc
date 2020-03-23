@@ -7,13 +7,18 @@ pub(crate) async fn get_version_pin(
 ) -> Result<Response<VersionPinQueryReply>, Status> {
     let mut pbd = PackratDb::new();
     let msg = request.get_ref();
+
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
     let result = pbd
         .find_versionpin(msg.package.as_str())
         .level(msg.level.as_deref().unwrap_or("facility"))
         .role(msg.role.as_deref().unwrap_or("any"))
         .platform(msg.platform.as_deref().unwrap_or("any"))
         .site(msg.site.as_deref().unwrap_or("any"))
-        .query(service.client())
+        .query(&client)
         .await
         .unwrap();
 

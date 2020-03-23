@@ -1,13 +1,13 @@
 use super::args::find::PbFind;
-use packybara_grpc::client as pbclient;
+use packybara_grpc::client_service as pbclient;
 use prettytable::{cell, format, row, table};
 use serde_json;
 //use tokio_postgres::Client;
-use packybara_grpc::client::Client;
+use packybara_grpc::client_service::ClientService;
 use packybara_grpc::utils::truncate;
 
 pub(crate) async fn find(
-    mut client: Client,
+    mut client: ClientService,
     cmd: PbFind,
 ) -> Result<(), Box<dyn std::error::Error>> {
     if let PbFind::VersionPin {

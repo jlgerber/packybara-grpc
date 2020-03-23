@@ -5,27 +5,31 @@ use structopt::StructOpt;
 #[structopt(about = "PackybaraDb Add")]
 pub enum PbAdd {
     /// Add one or more packages to the database.
-    #[structopt(display_order = 1, name = "package")]
+    #[structopt(display_order = 1, name = "packages")]
     Packages {
-        #[structopt(name = "PACKAGE")]
+        /// list of packages
+        #[structopt(name = "PACKAGES")]
         names: Vec<String>,
+        /// add a comment
+        #[structopt(short, long = "versionpin-id", display_order = 1)]
+        comment: Option<String>,
     },
     /// Add one or more levels to the database.
-    #[structopt(display_order = 2, name = "level")]
+    #[structopt(display_order = 2, name = "levels")]
     Levels {
-        #[structopt(name = "LEVEL")]
+        #[structopt(name = "LEVELS")]
         names: Vec<String>,
     },
     /// Add one or more roles to the database.
-    #[structopt(display_order = 3, name = "role")]
+    #[structopt(display_order = 3, name = "roles")]
     Roles {
-        #[structopt(name = "ROLE")]
+        #[structopt(name = "ROLES")]
         names: Vec<String>,
     },
     /// Add one or more roles to the database.
-    #[structopt(display_order = 4, name = "platform")]
+    #[structopt(display_order = 4, name = "platforms")]
     Platforms {
-        #[structopt(name = "PLATFORM")]
+        #[structopt(name = "PLATFORMS")]
         names: Vec<String>,
     },
     /// Add one or more roles to the database.

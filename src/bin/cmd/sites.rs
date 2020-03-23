@@ -1,10 +1,10 @@
 use super::args::find::PbFind;
-use packybara_grpc::client as pbclient;
-use packybara_grpc::client::Client;
+use packybara_grpc::client_service as pbclient;
+use packybara_grpc::client_service::ClientService;
 use prettytable::{cell, format, row, table};
 
 pub(crate) async fn find(
-    mut client: Client,
+    mut client: ClientService,
     cmd: PbFind,
 ) -> Result<(), Box<dyn std::error::Error>> {
     if let PbFind::Sites { site } = cmd {

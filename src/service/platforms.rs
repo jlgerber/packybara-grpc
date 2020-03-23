@@ -23,13 +23,17 @@ pub(crate) async fn get_platforms(
     let order_dir = order_direction
         .map(|v| OrderDirection::from_str(&v).ok())
         .flatten();
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
     let results = pbd
         .find_all_platforms()
         .name_opt(name.as_deref())
         .order_by_opt(order_by)
         .order_direction_opt(order_dir)
         .limit_opt(limit)
-        .query(service.client())
+        .query(&client)
         .await
         .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
 

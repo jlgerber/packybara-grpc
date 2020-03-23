@@ -25,6 +25,10 @@ pub(crate) async fn get_revisions(
     let order_dir = order_direction
         .map(|v| OrderDirection::from_str(&v).ok())
         .flatten();
+    let client = service
+        .client()
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
     let results = pbd
         .find_all_revisions()
         .id_opt(id.map(|x| x as i32))
@@ -33,7 +37,7 @@ pub(crate) async fn get_revisions(
         .order_by_opt(order_by)
         .order_direction_opt(order_dir)
         .limit_opt(limit)
-        .query(service.client())
+        .query(&client)
         .await
         .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
 
