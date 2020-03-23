@@ -1,6 +1,6 @@
 [package]
 name = "packybara-grpc"
-version = "0.21.0"
+version = "0.22.0"
 authors = ["jlgerber <jlgerber@gmail.com>"]
 edition = "2018"
 
@@ -18,7 +18,7 @@ prost = "0.6"
 tokio = { version = "0.2", features = ["macros"] }
 tokio-postgres = "0.5.3"
 packybara = {git= "https://github.com/jlgerber/packybara", tag="async_v0.64.1"}
-structopt = "0.3.11"
+structopt = "0.3.12"
 url = "2.1.1"
 log = "0.4.8"
 snafu = "0.6.3"
