@@ -18,6 +18,7 @@ service Packybara {
   rpc GetRevisions(RevisionsQueryRequest) returns (RevisionsQueryReply) {}
   rpc GetChanges(ChangesQueryRequest) returns (ChangesQueryReply) {}
   rpc AddPackages(PackagesAddRequest) returns (PackagesAddReply) {}
+  rpc AddLevels(LevelsAddRequest) returns (AddReply) {}
 }
 
 // GET VERSION PIN
@@ -233,6 +234,11 @@ message ChangesQueryRow {
 }
 message ChangesQueryReply { repeated ChangesQueryRow changes = 1; }
 //--------------------------
+//     ADD
+//--------------------------
+//   COMMON
+message AddReply { required uint64 updates = 1; }
+//--------------------------
 // add package
 message PackagesAddRequest {
   repeated string names = 1;
@@ -242,3 +248,10 @@ message PackagesAddRequest {
 
 message PackagesAddReply { required uint64 updates = 1; }
 //---------------
+// add level
+
+message LevelsAddRequest {
+  repeated string names = 1;
+  required string author = 2;
+  optional string comment = 3;
+}

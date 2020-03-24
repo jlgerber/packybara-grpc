@@ -75,10 +75,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbAdd::Packages { .. } => {
                 cmd::packages::add(client, cmd).await?;
             }
-            //     PbAdd::Levels { .. } => {
-            //         let tx = client.transaction().await?;
-            //         cmd::all_levels::add(tx, cmd).await?;
-            //     }
+            PbAdd::Levels { .. } => {
+                cmd::levels::add(client, cmd).await?;
+            }
             //     PbAdd::Roles { .. } => {
             //         let tx = client.transaction().await?;
             //         cmd::all_roles::add(tx, cmd).await?;

@@ -211,4 +211,11 @@ impl ClientService {
     ) -> Result<u64, Box<dyn std::error::Error>> {
         add_packages::cmd(self, options).await
     }
+
+    pub async fn add_levels(
+        &mut self,
+        options: add_levels::Options,
+    ) -> Result<u64, Box<dyn std::error::Error>> {
+        add_levels::cmd(self, options).await
+    }
 }

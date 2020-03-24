@@ -13,6 +13,7 @@
 //! buffer implementation, `hyper` for http2, and `tokio` for the async implementation.
 pub use pb::packybara_client::PackybaraClient;
 pub use pb::packybara_server::{Packybara, PackybaraServer};
+pub use pb::{AddReply, LevelsAddRequest, PackagesAddReply, PackagesAddRequest};
 pub use pb::{
     ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords, DistributionsQueryReply,
     DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply, LevelsQueryRequest,
@@ -25,7 +26,6 @@ pub use pb::{
     VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply,
     WithsQueryRequest, WithsQueryRow,
 };
-pub use pb::{PackagesAddReply, PackagesAddRequest};
 pub mod pb {
     tonic::include_proto!("packybara");
 }

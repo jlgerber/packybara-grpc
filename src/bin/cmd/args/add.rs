@@ -46,8 +46,6 @@ pub enum PbAdd {
     Withs {
         #[structopt(short, long = "versionpin-id", display_order = 1)]
         vpin_id: IdType,
-        #[structopt(short, long, display_order = 2)]
-        comment: String,
         #[structopt(name = "WITHS")]
         withs: Vec<String>,
         /// add a comment
