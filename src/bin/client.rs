@@ -81,10 +81,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbAdd::Roles { .. } => {
                 cmd::roles::add(client, cmd).await?;
             }
-            //     PbAdd::Platforms { .. } => {
-            //         let tx = client.transaction().await?;
-            //         cmd::all_platforms::add(tx, cmd).await?;
-            //     }
+            PbAdd::Platforms { .. } => {
+                cmd::platforms::add(client, cmd).await?;
+            }
             //     PbAdd::Withs { .. } => {
             //         let tx = client.transaction().await?;
             //         cmd::withs::add(tx, cmd).await?;

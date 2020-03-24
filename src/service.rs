@@ -44,7 +44,10 @@ use tonic::transport::Server;
 use tonic::{Code, Request, Response, Status};
 
 use crate::DatabaseConfig;
-use crate::{AddReply, LevelsAddRequest, PackagesAddReply, PackagesAddRequest, RolesAddRequest};
+use crate::{
+    AddReply, LevelsAddRequest, PackagesAddReply, PackagesAddRequest, PlatformsAddRequest,
+    RolesAddRequest,
+};
 
 mod changes;
 mod distributions;
@@ -240,5 +243,16 @@ impl Packybara for PackybaraService {
             .await
             .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
         roles::add_roles(client, request).await
+    }
+
+    async fn add_platforms(
+        &self,
+        request: Request<PlatformsAddRequest>,
+    ) -> Result<Response<AddReply>, Status> {
+        let client = self
+            .client()
+            .await
+            .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+        platforms::add_platforms(client, request).await
     }
 }

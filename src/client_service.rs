@@ -225,4 +225,11 @@ impl ClientService {
     ) -> Result<u64, Box<dyn std::error::Error>> {
         add_roles::cmd(self, options).await
     }
+
+    pub async fn add_platforms(
+        &mut self,
+        options: add_platforms::Options,
+    ) -> Result<u64, Box<dyn std::error::Error>> {
+        add_platforms::cmd(self, options).await
+    }
 }
