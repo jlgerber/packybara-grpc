@@ -32,7 +32,7 @@ pub enum PbAdd {
         #[structopt(short, long = "versionpin-id", display_order = 1)]
         comment: Option<String>,
     },
-    /// Add one or more roles to the database.
+    /// Add one or more platforms to the database.
     #[structopt(display_order = 4, name = "platforms")]
     Platforms {
         #[structopt(name = "PLATFORMS")]
@@ -41,8 +41,17 @@ pub enum PbAdd {
         #[structopt(short, long = "versionpin-id", display_order = 1)]
         comment: Option<String>,
     },
+    /// Add one or more Sites to the database.
+    #[structopt(display_order = 5, name = "sites")]
+    Sites {
+        #[structopt(name = "SITES")]
+        names: Vec<String>,
+        /// add a comment
+        #[structopt(short, long = "versionpin-id", display_order = 1)]
+        comment: Option<String>,
+    },
     /// Add one or more roles to the database.
-    #[structopt(display_order = 5, name = "withs")]
+    #[structopt(display_order = 6, name = "withs")]
     Withs {
         #[structopt(short, long = "versionpin-id", display_order = 1)]
         vpin_id: IdType,
@@ -52,7 +61,7 @@ pub enum PbAdd {
         #[structopt(short, long = "versionpin-id", display_order = 1)]
         comment: Option<String>,
     },
-    #[structopt(display_order = 6, name = "versionpins")]
+    #[structopt(display_order = 7, name = "versionpins")]
     VersionPins {
         #[structopt(short, long = "distribution", display_order = 1)]
         distribution: String,

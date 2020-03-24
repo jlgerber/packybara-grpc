@@ -84,6 +84,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbAdd::Platforms { .. } => {
                 cmd::platforms::add(client, cmd).await?;
             }
+            PbAdd::Sites { .. } => {
+                cmd::sites::add(client, cmd).await?;
+            }
             //     PbAdd::Withs { .. } => {
             //         let tx = client.transaction().await?;
             //         cmd::withs::add(tx, cmd).await?;

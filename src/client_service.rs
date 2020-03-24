@@ -232,4 +232,11 @@ impl ClientService {
     ) -> Result<u64, Box<dyn std::error::Error>> {
         add_platforms::cmd(self, options).await
     }
+
+    pub async fn add_sites(
+        &mut self,
+        options: add_sites::Options,
+    ) -> Result<u64, Box<dyn std::error::Error>> {
+        add_sites::cmd(self, options).await
+    }
 }

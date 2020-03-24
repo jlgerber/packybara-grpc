@@ -21,6 +21,7 @@ service Packybara {
   rpc AddLevels(LevelsAddRequest) returns (AddReply) {}
   rpc AddRoles(RolesAddRequest) returns (AddReply) {}
   rpc AddPlatforms(PlatformsAddRequest) returns (AddReply) {}
+  rpc AddSites(SitesAddRequest) returns (AddReply) {}
 }
 
 // GET VERSION PIN
@@ -271,6 +272,15 @@ message RolesAddRequest {
 // add platform
 
 message PlatformsAddRequest {
+  repeated string names = 1;
+  required string author = 2;
+  optional string comment = 3;
+}
+
+//---------------
+// add sites
+
+message SitesAddRequest {
   repeated string names = 1;
   required string author = 2;
   optional string comment = 3;
