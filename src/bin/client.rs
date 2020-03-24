@@ -78,10 +78,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbAdd::Levels { .. } => {
                 cmd::levels::add(client, cmd).await?;
             }
-            //     PbAdd::Roles { .. } => {
-            //         let tx = client.transaction().await?;
-            //         cmd::all_roles::add(tx, cmd).await?;
-            //     }
+            PbAdd::Roles { .. } => {
+                cmd::roles::add(client, cmd).await?;
+            }
             //     PbAdd::Platforms { .. } => {
             //         let tx = client.transaction().await?;
             //         cmd::all_platforms::add(tx, cmd).await?;

@@ -49,3 +49,31 @@ pub(crate) async fn get_roles(
     }
     Ok(Response::new(RolesQueryReply { roles }))
 }
+
+pub(crate) async fn add_roles(
+    mut client: Client,
+    request: Request<RolesAddRequest>,
+) -> Result<Response<AddReply>, Status> {
+    let pbd = PackratDb::new();
+
+    let mut tx = pbd
+        .transaction(&mut client)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+    let RolesAddRequest {
+        mut names,
+        author,
+        comment,
+    } = request.into_inner();
+    let comment = comment.unwrap_or("Auto Comment - Add Roles".to_string());
+    let results = PackratDb::add_roles()
+        .roles(&mut names)
+        .create(&mut tx)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?
+        .commit(&author, &comment, tx)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+
+    Ok(Response::new(AddReply { updates: results }))
+}

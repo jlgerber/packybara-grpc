@@ -19,6 +19,7 @@ service Packybara {
   rpc GetChanges(ChangesQueryRequest) returns (ChangesQueryReply) {}
   rpc AddPackages(PackagesAddRequest) returns (PackagesAddReply) {}
   rpc AddLevels(LevelsAddRequest) returns (AddReply) {}
+  rpc AddRoles(RolesAddRequest) returns (AddReply) {}
 }
 
 // GET VERSION PIN
@@ -251,6 +252,15 @@ message PackagesAddReply { required uint64 updates = 1; }
 // add level
 
 message LevelsAddRequest {
+  repeated string names = 1;
+  required string author = 2;
+  optional string comment = 3;
+}
+
+//---------------
+// add role
+
+message RolesAddRequest {
   repeated string names = 1;
   required string author = 2;
   optional string comment = 3;
