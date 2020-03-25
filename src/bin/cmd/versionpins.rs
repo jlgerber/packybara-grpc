@@ -1,3 +1,4 @@
+use super::args::add::PbAdd;
 use super::args::find::PbFind;
 use packybara_grpc::client_service as pbclient;
 use packybara_grpc::client_service::ClientService;
@@ -65,4 +66,35 @@ pub(crate) async fn find(
         table.printstd();
     }
     Ok(())
+}
+
+pub(crate) async fn add(
+    mut client: ClientService,
+    cmd: PbAdd,
+) -> Result<u64, Box<dyn std::error::Error>> {
+    if let PbAdd::VersionPins {
+        distribution,
+        levels,
+        roles,
+        platforms,
+        sites,
+        comment,
+    } = cmd
+    {
+        let username = whoami::username();
+        let opts = pbclient::add_versionpins::Options::new(distribution, username)
+            .levels(levels)
+            .roles(roles)
+            .platforms(platforms)
+            .sites(sites)
+            .comment_opt(Some(
+                comment.unwrap_or("Auto Comment - Versionpin Added".to_string()),
+            ));
+
+        let results = client.add_versionpins(opts).await?;
+
+        println!("{}", results);
+        return Ok(results);
+    }
+    Ok(0)
 }

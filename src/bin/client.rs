@@ -3,12 +3,14 @@ mod cmd;
 use cmd::args::*;
 use env_logger;
 use env_logger::Env;
+use main_error::MainError;
 use packybara_grpc::url_builder;
 use std::env;
 use structopt::StructOpt;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> Result<(), MainError> {
+    //Box<dyn std::error::Error>> {
     let opt = Pb::from_args();
     if let Pb {
         loglevel: Some(ref level),
@@ -90,10 +92,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbAdd::Withs { .. } => {
                 cmd::withs::add(client, cmd).await?;
             }
-            //     PbAdd::VersionPins { .. } => {
-            //         let tx = client.transaction().await?;
-            //         cmd::versionpins::add(tx, cmd).await?;
-            //     }
+            PbAdd::VersionPins { .. } => {
+                cmd::versionpins::add(client, cmd).await?;
+            }
             _ => println!("Not Implemented"),
         },
         // PbCrud::Set { cmd } => match cmd {

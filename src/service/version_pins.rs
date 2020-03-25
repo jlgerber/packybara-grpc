@@ -102,3 +102,52 @@ pub(crate) async fn get_version_pins(
     }
     Ok(Response::new(VersionPinsQueryReply { vpins }))
 }
+
+pub(crate) async fn add_versionpins(
+    mut client: Client,
+    request: Request<VersionPinsAddRequest>,
+) -> Result<Response<AddReply>, Status> {
+    let pbd = PackratDb::new();
+
+    let mut tx = pbd
+        .transaction(&mut client)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+    let VersionPinsAddRequest {
+        distribution,
+        mut levels,
+        mut roles,
+        mut platforms,
+        mut sites,
+        author,
+        comment,
+    } = request.into_inner();
+    let comment = comment.unwrap_or("Auto Comment - Add VersionPins".to_string());
+    let pieces: Vec<&str> = distribution.split("-").collect::<Vec<_>>(); //FIX
+    if levels.len() == 0 {
+        levels.push("facility".into());
+    }
+    if roles.len() == 0 {
+        roles.push("any".into());
+    }
+    if platforms.len() == 0 {
+        platforms.push("any".into());
+    }
+    if sites.len() == 0 {
+        sites.push("any".into())
+    }
+
+    let results = PackratDb::add_versionpins(pieces[0], pieces[1])
+        .levels(&mut levels)
+        .roles(&mut roles)
+        .platforms(&mut platforms)
+        .sites(&mut sites)
+        .create(&mut tx)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?
+        .commit(&author, &comment, tx)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+
+    Ok(Response::new(AddReply { updates: results }))
+}

@@ -46,7 +46,7 @@ use tonic::{Code, Request, Response, Status};
 use crate::DatabaseConfig;
 use crate::{
     AddReply, LevelsAddRequest, PackagesAddReply, PackagesAddRequest, PlatformsAddRequest,
-    RolesAddRequest, SitesAddRequest, WithsAddRequest,
+    RolesAddRequest, SitesAddRequest, VersionPinsAddRequest, WithsAddRequest,
 };
 
 mod changes;
@@ -276,5 +276,16 @@ impl Packybara for PackybaraService {
             .await
             .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
         withs::add_withs(client, request).await
+    }
+
+    async fn add_version_pins(
+        &self,
+        request: Request<VersionPinsAddRequest>,
+    ) -> Result<Response<AddReply>, Status> {
+        let client = self
+            .client()
+            .await
+            .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+        version_pins::add_versionpins(client, request).await
     }
 }

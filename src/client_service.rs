@@ -246,4 +246,11 @@ impl ClientService {
     ) -> Result<u64, Box<dyn std::error::Error>> {
         add_withs::cmd(self, options).await
     }
+
+    pub async fn add_versionpins(
+        &mut self,
+        options: add_versionpins::Options,
+    ) -> Result<u64, Box<dyn std::error::Error>> {
+        add_versionpins::cmd(self, options).await
+    }
 }
