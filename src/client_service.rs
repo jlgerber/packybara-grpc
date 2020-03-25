@@ -239,4 +239,11 @@ impl ClientService {
     ) -> Result<u64, Box<dyn std::error::Error>> {
         add_sites::cmd(self, options).await
     }
+
+    pub async fn add_withs(
+        &mut self,
+        options: add_withs::Options,
+    ) -> Result<u64, Box<dyn std::error::Error>> {
+        add_withs::cmd(self, options).await
+    }
 }

@@ -46,7 +46,7 @@ use tonic::{Code, Request, Response, Status};
 use crate::DatabaseConfig;
 use crate::{
     AddReply, LevelsAddRequest, PackagesAddReply, PackagesAddRequest, PlatformsAddRequest,
-    RolesAddRequest, SitesAddRequest,
+    RolesAddRequest, SitesAddRequest, WithsAddRequest,
 };
 
 mod changes;
@@ -265,5 +265,16 @@ impl Packybara for PackybaraService {
             .await
             .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
         sites::add_sites(client, request).await
+    }
+
+    async fn add_withs(
+        &self,
+        request: Request<WithsAddRequest>,
+    ) -> Result<Response<AddReply>, Status> {
+        let client = self
+            .client()
+            .await
+            .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+        withs::add_withs(client, request).await
     }
 }

@@ -143,3 +143,80 @@ pub mod get_withs {
         Ok(results)
     }
 }
+
+pub mod add_withs {
+    /// Encapsulate the query parameter for adding withs
+    pub struct Options {
+        pub vpin_id: i64,
+        pub withs: Vec<String>,
+        pub author: String,
+        pub comment: Option<String>,
+    }
+
+    impl Options {
+        /// New up an instance of add_withs::Options given a name, order_by
+        /// order_direction, and limit
+        ///
+        /// # Arguments
+        ///
+        /// * `names` - vector of withs names
+        /// * `author` - name of the person who authored the new withs
+        ///
+        /// # Returns
+        ///
+        /// * Option instance
+        pub fn new<I>(vpin_id: i64, withs: Vec<I>, author: I) -> Self
+        where
+            I: Into<String>,
+        {
+            let withs = withs.into_iter().map(|n| n.into()).collect::<Vec<_>>();
+            //
+
+            Self {
+                vpin_id,
+                withs,
+                author: author.into(),
+                comment: None,
+            }
+        }
+
+        /// Update comment with option wrapped type implementing
+        /// Into<String>
+        ///
+        /// # Arguments
+        ///
+        /// * `comment` - The optional comment associated with the commit
+        pub fn comment_opt<I>(mut self, comment: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            let comment = comment.map(|c| c.into());
+            self.comment = comment;
+            self
+        }
+    }
+
+    use super::*;
+    use crate::{AddReply, WithsAddRequest};
+    pub async fn cmd(
+        grpc_client: &mut ClientService,
+        options: Options,
+    ) -> Result<u64, Box<dyn std::error::Error>> {
+        let Options {
+            vpin_id,
+            withs,
+            author,
+            comment,
+        } = options;
+        let request = tonic::Request::new(WithsAddRequest {
+            vpin_id,
+            withs,
+            author,
+            comment,
+        });
+        let response = grpc_client.client.add_withs(request).await?;
+        let AddReply { updates } = response.into_inner();
+
+        Ok(updates)
+    }
+}

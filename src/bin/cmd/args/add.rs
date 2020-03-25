@@ -53,13 +53,15 @@ pub enum PbAdd {
     /// Add one or more roles to the database.
     #[structopt(display_order = 6, name = "withs")]
     Withs {
+        /// set the version pin id of the distribution to associate withs with
         #[structopt(short, long = "versionpin-id", display_order = 1)]
         vpin_id: IdType,
+        /// add a comment
+        #[structopt(short, long, display_order = 2)]
+        comment: Option<String>,
+        /// Provide one or more package names as withs
         #[structopt(name = "WITHS")]
         withs: Vec<String>,
-        /// add a comment
-        #[structopt(short, long = "versionpin-id", display_order = 1)]
-        comment: Option<String>,
     },
     #[structopt(display_order = 7, name = "versionpins")]
     VersionPins {

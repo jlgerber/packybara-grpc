@@ -87,10 +87,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             PbAdd::Sites { .. } => {
                 cmd::sites::add(client, cmd).await?;
             }
-            //     PbAdd::Withs { .. } => {
-            //         let tx = client.transaction().await?;
-            //         cmd::withs::add(tx, cmd).await?;
-            //     }
+            PbAdd::Withs { .. } => {
+                cmd::withs::add(client, cmd).await?;
+            }
             //     PbAdd::VersionPins { .. } => {
             //         let tx = client.transaction().await?;
             //         cmd::versionpins::add(tx, cmd).await?;

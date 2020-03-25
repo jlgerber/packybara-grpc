@@ -15,7 +15,7 @@ pub use pb::packybara_client::PackybaraClient;
 pub use pb::packybara_server::{Packybara, PackybaraServer};
 pub use pb::{
     AddReply, LevelsAddRequest, PackagesAddReply, PackagesAddRequest, PlatformsAddRequest,
-    RolesAddRequest, SitesAddRequest,
+    RolesAddRequest, SitesAddRequest, WithsAddRequest,
 };
 pub use pb::{
     ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords, DistributionsQueryReply,

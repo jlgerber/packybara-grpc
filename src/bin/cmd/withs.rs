@@ -1,4 +1,6 @@
+use super::args::add::PbAdd;
 use super::args::find::PbFind;
+
 use packybara_grpc::client_service as pbclient;
 use packybara_grpc::client_service::ClientService;
 use prettytable::{cell, format, row, table};
@@ -48,4 +50,27 @@ pub(crate) async fn find(
         table.printstd();
     }
     Ok(())
+}
+
+pub(crate) async fn add(
+    mut client: ClientService,
+    cmd: PbAdd,
+) -> Result<u64, Box<dyn std::error::Error>> {
+    if let PbAdd::Withs {
+        vpin_id,
+        withs,
+        comment,
+    } = cmd
+    {
+        let username = whoami::username();
+        let opts = pbclient::add_withs::Options::new(vpin_id as i64, withs, username).comment_opt(
+            Some(comment.unwrap_or("Auto Comment - Withs Added".to_string())),
+        );
+
+        let results = client.add_withs(opts).await?;
+
+        println!("{}", results);
+        return Ok(results);
+    }
+    Ok(0)
 }

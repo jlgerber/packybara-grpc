@@ -81,3 +81,31 @@ pub(crate) async fn get_withs(
     }
     Ok(Response::new(WithsQueryReply { withs }))
 }
+
+pub(crate) async fn add_withs(
+    mut client: Client,
+    request: Request<WithsAddRequest>,
+) -> Result<Response<AddReply>, Status> {
+    let pbd = PackratDb::new();
+
+    let mut tx = pbd
+        .transaction(&mut client)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+    let WithsAddRequest {
+        vpin_id,
+        withs,
+        author,
+        comment,
+    } = request.into_inner();
+    let comment = comment.unwrap_or("Auto Comment - Add Sites".to_string());
+    let results = PackratDb::add_withs()
+        .create(&mut tx, vpin_id as i32, withs)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?
+        .commit(&author, &comment, tx)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+
+    Ok(Response::new(AddReply { updates: results }))
+}
