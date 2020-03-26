@@ -3,6 +3,7 @@ pub(crate) mod changes;
 pub(crate) mod distributions;
 pub(crate) mod levels;
 pub(crate) mod packages;
+pub(crate) mod packages_xml;
 pub(crate) mod pkgcoords;
 pub(crate) mod platforms;
 pub(crate) mod revisions;

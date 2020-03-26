@@ -5,13 +5,14 @@ use crate::{
     url as grpcurl, ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords,
     DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply,
     LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow,
-    PackybaraClient, PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow,
-    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply,
-    RevisionsQueryRequest, RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
-    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
-    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
-    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
-    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
+    PackagesXmlExportReply, PackagesXmlExportRequest, PackybaraClient, PkgCoordsQueryReply,
+    PkgCoordsQueryRequest, PkgCoordsQueryRow, PlatformsQueryReply, PlatformsQueryRequest,
+    PlatformsQueryRow, RevisionsQueryReply, RevisionsQueryRequest, RevisionsQueryRow,
+    RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest,
+    SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
+    VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
+    VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply, WithsQueryRequest,
+    WithsQueryRow,
 };
 use chrono::{DateTime, Local};
 use packybara::db::find::versionpins::FindVersionPinsRow;
@@ -71,6 +72,8 @@ pub use versionpin::*;
 pub mod versionpin_withs;
 pub use versionpin_withs::*;
 
+pub mod packages_xml;
+pub use packages_xml::*;
 // NOTE:: this has some implications for applications that want to communicate
 // in multiple channels. If this becomes a requirement, we will have to
 // put an arc around client
@@ -252,5 +255,14 @@ impl ClientService {
         options: add_versionpins::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
         add_versionpins::cmd(self, options).await
+    }
+
+    //--------------------------------
+    // export
+    pub async fn export_packagesxml(
+        &mut self,
+        options: export_packagesxml::Options,
+    ) -> Result<bool, Box<dyn std::error::Error>> {
+        export_packagesxml::cmd(self, options).await
     }
 }

@@ -2,6 +2,8 @@ pub mod find;
 pub use find::*;
 pub mod add;
 pub use add::*;
+pub mod export;
+pub use export::*;
 
 use structopt::StructOpt;
 
@@ -45,9 +47,9 @@ pub enum PbCrud {
     // #[structopt(display_order = 4)]
     // Delete {},
     // /// Serialize state.
-    // #[structopt(display_order = 5)]
-    // Export {
-    //     #[structopt(subcommand)]
-    //     cmd: PbExport,
-    // },
+    #[structopt(display_order = 5)]
+    Export {
+        #[structopt(subcommand)]
+        cmd: PbExport,
+    },
 }

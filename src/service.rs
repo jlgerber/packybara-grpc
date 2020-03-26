@@ -9,13 +9,14 @@ use crate::{
     url::GrpcUrl, ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords,
     DistributionsQueryReply, DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply,
     LevelsQueryRequest, LevelsQueryRow, PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow,
-    Packybara, PackybaraServer, PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow,
-    PlatformsQueryReply, PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply,
-    RevisionsQueryRequest, RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow,
-    SitesQueryReply, SitesQueryRequest, SitesQueryRow, VersionPinQueryReply,
-    VersionPinQueryRequest, VersionPinWithsQueryReply, VersionPinWithsQueryRequest,
-    VersionPinWithsQueryRow, VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow,
-    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
+    PackagesXmlExportReply, PackagesXmlExportRequest, Packybara, PackybaraServer,
+    PkgCoordsQueryReply, PkgCoordsQueryRequest, PkgCoordsQueryRow, PlatformsQueryReply,
+    PlatformsQueryRequest, PlatformsQueryRow, RevisionsQueryReply, RevisionsQueryRequest,
+    RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply,
+    SitesQueryRequest, SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest,
+    VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
+    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply,
+    WithsQueryRequest, WithsQueryRow,
 };
 use deadpool_postgres::{Manager, ManagerConfig, Pool, PoolError, RecyclingMethod};
 use log;
@@ -53,6 +54,7 @@ mod changes;
 mod distributions;
 mod levels;
 mod packages;
+mod packages_xml;
 mod pkgcoords;
 mod platforms;
 mod revisions;
@@ -287,5 +289,16 @@ impl Packybara for PackybaraService {
             .await
             .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
         version_pins::add_versionpins(client, request).await
+    }
+
+    async fn export_packages(
+        &self,
+        request: Request<PackagesXmlExportRequest>,
+    ) -> Result<Response<PackagesXmlExportReply>, Status> {
+        let client = self
+            .client()
+            .await
+            .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+        packages_xml::export_packagesxml(client, request).await
     }
 }

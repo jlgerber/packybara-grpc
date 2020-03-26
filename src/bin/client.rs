@@ -103,12 +103,12 @@ async fn main() -> Result<(), MainError> {
         //         cmd::versionpins::set(tx, cmd).await?;
         //     }
         // },
-        // PbCrud::Export { cmd } => match cmd {
-        //     PbExport::PackagesXml { .. } => {
-        //         cmd::export::export(client, cmd).await?;
-        //     }
-        // },
-        //_ => println!("Not implemented"),
+        PbCrud::Export { cmd } => match cmd {
+            PbExport::PackagesXml { .. } => {
+                cmd::packages_xml::export(client, cmd).await?;
+            }
+        },
+        _ => println!("Not implemented"),
     }
 
     Ok(())

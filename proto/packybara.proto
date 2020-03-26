@@ -26,6 +26,9 @@ service Packybara {
   rpc AddSites(SitesAddRequest) returns (AddReply) {}
   rpc AddWiths(WithsAddRequest) returns (AddReply) {}
   rpc AddVersionPins(VersionPinsAddRequest) returns (AddReply) {}
+
+  rpc ExportPackages(PackagesXmlExportRequest)
+      returns (PackagesXmlExportReply) {}
 }
 
 // GET VERSION PIN
@@ -310,3 +313,13 @@ message VersionPinsAddRequest {
   required string author = 6;
   optional string comment = 7;
 }
+//-----------------------------
+//         Export
+//-----------------------------
+
+message PackagesXmlExportRequest {
+  required string show = 1;
+  required string path = 2;
+}
+
+message PackagesXmlExportReply { required bool result = 1; }
