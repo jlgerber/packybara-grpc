@@ -1,5 +1,6 @@
 use super::*;
 use crate::utils::extract_coords;
+use packybara::db::update::versionpins::VersionPinChange;
 
 pub(crate) async fn get_version_pins(
     service: &PackybaraService,
@@ -151,3 +152,56 @@ pub(crate) async fn add_versionpins(
 
     Ok(Response::new(AddReply { updates: results }))
 }
+
+pub(crate) async fn set_versionpins(
+    mut client: Client,
+    request: Request<VersionPinsSetRequest>,
+) -> Result<Response<VersionPinsSetReply>, Status> {
+    let pbd = PackratDb::new();
+
+    let mut tx = pbd
+        .transaction(&mut client)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+    let VersionPinsSetRequest {
+        vpin_ids,
+        dist_ids,
+        author,
+        comment,
+    } = request.into_inner();
+    let comment = comment.unwrap_or("Auto Comment - Add VersionPins".to_string());
+
+    let mut update_versionpins = PackratDb::update_versionpins();
+    for cnt in 0..dist_ids.len() {
+        let change = VersionPinChange::new(vpin_ids[cnt] as i32, Some(dist_ids[cnt] as i32), None);
+        update_versionpins = update_versionpins.change(change);
+    }
+    let update_cnt = update_versionpins
+        .update(&mut tx)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?
+        .commit(&author, &comment, tx)
+        .await
+        .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+    println!("{}", update_cnt);
+    Ok(Response::new(VersionPinsSetReply {
+        result: update_cnt != 0,
+    }))
+}
+/*
+assert_eq!(dist_ids.len(), vpin_ids.len());
+    let username = whoami::username();
+    let mut update_versionpins = PackratDb::update_versionpins();
+    for cnt in 0..dist_ids.len() {
+        let change = VersionPinChange::new(vpin_ids[cnt], Some(dist_ids[cnt]), None);
+        update_versionpins = update_versionpins.change(change);
+    }
+
+    let update_cnt = update_versionpins
+        .update(&mut tx)
+        .await?
+        .commit(&username, &comment, tx)
+        .await?;
+    println!("{}", update_cnt);
+    Ok(())
+ */

@@ -1,5 +1,6 @@
 use super::args::add::PbAdd;
 use super::args::find::PbFind;
+use super::args::set::PbSet;
 use packybara_grpc::client_service as pbclient;
 use packybara_grpc::client_service::ClientService;
 use packybara_grpc::utils::truncate;
@@ -97,4 +98,27 @@ pub(crate) async fn add(
         return Ok(results);
     }
     Ok(0)
+}
+
+pub(crate) async fn set(
+    mut client: ClientService,
+    cmd: PbSet,
+) -> Result<bool, Box<dyn std::error::Error>> {
+    let PbSet::VersionPins {
+        vpin_ids,
+        dist_ids,
+        comment,
+    } = cmd;
+
+    let username = whoami::username();
+    let opts = pbclient::set_versionpins::Options::new(
+        vpin_ids.into_iter().map(|x| x as i64).collect::<Vec<_>>(),
+        dist_ids.into_iter().map(|x| x as i64).collect::<Vec<_>>(),
+        username,
+        comment,
+    );
+    let results = client.set_versionpins(opts).await?;
+
+    println!("{}", results);
+    return Ok(results);
 }

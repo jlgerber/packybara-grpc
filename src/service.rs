@@ -15,8 +15,8 @@ use crate::{
     RevisionsQueryRow, RolesQueryReply, RolesQueryRequest, RolesQueryRow, SitesQueryReply,
     SitesQueryRequest, SitesQueryRow, VersionPinQueryReply, VersionPinQueryRequest,
     VersionPinWithsQueryReply, VersionPinWithsQueryRequest, VersionPinWithsQueryRow,
-    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply,
-    WithsQueryRequest, WithsQueryRow,
+    VersionPinsQueryReply, VersionPinsQueryRequest, VersionPinsQueryRow, VersionPinsSetReply,
+    VersionPinsSetRequest, WithsQueryReply, WithsQueryRequest, WithsQueryRow,
 };
 use deadpool_postgres::{Manager, ManagerConfig, Pool, PoolError, RecyclingMethod};
 use log;
@@ -289,6 +289,17 @@ impl Packybara for PackybaraService {
             .await
             .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
         version_pins::add_versionpins(client, request).await
+    }
+
+    async fn set_version_pins(
+        &self,
+        request: Request<VersionPinsSetRequest>,
+    ) -> Result<Response<VersionPinsSetReply>, Status> {
+        let client = self
+            .client()
+            .await
+            .map_err(|e| Status::new(Code::Internal, format!("{}", e)))?;
+        version_pins::set_versionpins(client, request).await
     }
 
     async fn export_packages(

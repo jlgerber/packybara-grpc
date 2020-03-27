@@ -2,11 +2,11 @@ syntax = "proto2";
 package packybara;
 
 service Packybara {
+  // GET
   rpc GetVersionPin(VersionPinQueryRequest) returns (VersionPinQueryReply) {}
   rpc GetVersionPins(VersionPinsQueryRequest) returns (VersionPinsQueryReply) {}
   rpc GetVersionPinWiths(VersionPinWithsQueryRequest)
       returns (VersionPinWithsQueryReply) {}
-
   rpc GetLevels(LevelsQueryRequest) returns (LevelsQueryReply) {}
   rpc GetRoles(RolesQueryRequest) returns (RolesQueryReply) {}
   rpc GetSites(SitesQueryRequest) returns (SitesQueryReply) {}
@@ -14,11 +14,11 @@ service Packybara {
   rpc GetPackages(PackagesQueryRequest) returns (PackagesQueryReply) {}
   rpc GetDistributions(DistributionsQueryRequest)
       returns (DistributionsQueryReply) {}
-
   rpc GetPkgCoords(PkgCoordsQueryRequest) returns (PkgCoordsQueryReply) {}
   rpc GetWiths(WithsQueryRequest) returns (WithsQueryReply) {}
   rpc GetRevisions(RevisionsQueryRequest) returns (RevisionsQueryReply) {}
   rpc GetChanges(ChangesQueryRequest) returns (ChangesQueryReply) {}
+  // ADD
   rpc AddPackages(PackagesAddRequest) returns (PackagesAddReply) {}
   rpc AddLevels(LevelsAddRequest) returns (AddReply) {}
   rpc AddRoles(RolesAddRequest) returns (AddReply) {}
@@ -26,9 +26,11 @@ service Packybara {
   rpc AddSites(SitesAddRequest) returns (AddReply) {}
   rpc AddWiths(WithsAddRequest) returns (AddReply) {}
   rpc AddVersionPins(VersionPinsAddRequest) returns (AddReply) {}
-
+  // EXPORT
   rpc ExportPackages(PackagesXmlExportRequest)
       returns (PackagesXmlExportReply) {}
+  // SET
+  rpc SetVersionPins(VersionPinsSetRequest) returns (VersionPinsSetReply) {}
 }
 
 // GET VERSION PIN
@@ -323,3 +325,15 @@ message PackagesXmlExportRequest {
 }
 
 message PackagesXmlExportReply { required bool result = 1; }
+//------------------------------
+//        Set
+//------------------------------
+// VersionPins
+message VersionPinsSetRequest {
+  repeated int64 vpin_ids = 1;
+  repeated int64 dist_ids = 2;
+  required string author = 3;
+  optional string comment = 4;
+}
+
+message VersionPinsSetReply { required bool result = 1; }

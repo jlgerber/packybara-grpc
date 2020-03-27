@@ -95,20 +95,17 @@ async fn main() -> Result<(), MainError> {
             PbAdd::VersionPins { .. } => {
                 cmd::versionpins::add(client, cmd).await?;
             }
-            _ => println!("Not Implemented"),
         },
-        // PbCrud::Set { cmd } => match cmd {
-        //     PbSet::VersionPins { .. } => {
-        //         let tx = client.transaction().await?;
-        //         cmd::versionpins::set(tx, cmd).await?;
-        //     }
-        // },
+        PbCrud::Set { cmd } => match cmd {
+            PbSet::VersionPins { .. } => {
+                cmd::versionpins::set(client, cmd).await?;
+            }
+        },
         PbCrud::Export { cmd } => match cmd {
             PbExport::PackagesXml { .. } => {
                 cmd::packages_xml::export(client, cmd).await?;
             }
         },
-        _ => println!("Not implemented"),
     }
 
     Ok(())

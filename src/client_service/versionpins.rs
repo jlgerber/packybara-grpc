@@ -339,3 +339,65 @@ pub mod add_versionpins {
         Ok(updates)
     }
 }
+
+pub mod set_versionpins {
+    /// Encapsulate the query parameter for adding sites
+    pub struct Options {
+        pub vpin_ids: Vec<i64>,
+        pub dist_ids: Vec<i64>,
+        pub author: String,
+        pub comment: String,
+    }
+
+    impl Options {
+        /// New up an instance of add_sites::Options given a name, order_by
+        /// order_direction, and limit
+        ///
+        /// # Arguments
+        ///
+        /// * `vpin_ids` - vector of versionpin ids
+        /// * `dist_ids` - zero or more distribution ids
+        /// * `roles` - zero or more roles to create version pin at
+        /// * `platforms` - zero or more platforms to create version pin at
+        /// * `author` - name of the person who authored the new sites
+        ///
+        /// # Returns
+        ///
+        /// * Option instance
+        pub fn new<I>(vpin_ids: Vec<i64>, dist_ids: Vec<i64>, author: I, comment: I) -> Self
+        where
+            I: Into<String>,
+        {
+            Self {
+                vpin_ids,
+                dist_ids,
+                author: author.into(),
+                comment: comment.into(),
+            }
+        }
+    }
+
+    use super::*;
+    use crate::{VersionPinsSetReply, VersionPinsSetRequest};
+    pub async fn cmd(
+        grpc_client: &mut ClientService,
+        options: Options,
+    ) -> Result<bool, Box<dyn std::error::Error>> {
+        let Options {
+            vpin_ids,
+            dist_ids,
+            author,
+            comment,
+        } = options;
+        let request = tonic::Request::new(VersionPinsSetRequest {
+            vpin_ids,
+            dist_ids,
+            author,
+            comment: Some(comment),
+        });
+        let response = grpc_client.client.set_version_pins(request).await?;
+        let VersionPinsSetReply { result } = response.into_inner();
+
+        Ok(result)
+    }
+}

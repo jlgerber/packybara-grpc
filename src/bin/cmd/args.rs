@@ -2,6 +2,8 @@ pub mod find;
 pub use find::*;
 pub mod add;
 pub use add::*;
+pub mod set;
+pub use set::*;
 pub mod export;
 pub use export::*;
 
@@ -29,13 +31,13 @@ pub enum PbCrud {
         #[structopt(subcommand)]
         cmd: PbFind,
     },
-    // /// Update things in the database.
-    // #[structopt(display_order = 2)]
-    // Set {
-    //     /// Read subcommands
-    //     #[structopt(subcommand)]
-    //     cmd: PbSet,
-    // },
+    /// Update things in the database.
+    #[structopt(display_order = 2)]
+    Set {
+        /// Read subcommands
+        #[structopt(subcommand)]
+        cmd: PbSet,
+    },
     /// Create new things in the database.
     #[structopt(display_order = 3)]
     Add {

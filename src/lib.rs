@@ -27,8 +27,8 @@ pub use pb::{
     RolesQueryRequest, RolesQueryRow, SitesQueryReply, SitesQueryRequest, SitesQueryRow,
     VersionPinQueryReply, VersionPinQueryRequest, VersionPinWithsQueryReply,
     VersionPinWithsQueryRequest, VersionPinWithsQueryRow, VersionPinsQueryReply,
-    VersionPinsQueryRequest, VersionPinsQueryRow, WithsQueryReply, WithsQueryRequest,
-    WithsQueryRow,
+    VersionPinsQueryRequest, VersionPinsQueryRow, VersionPinsSetReply, VersionPinsSetRequest,
+    WithsQueryReply, WithsQueryRequest, WithsQueryRow,
 };
 pub mod pb {
     tonic::include_proto!("packybara");
