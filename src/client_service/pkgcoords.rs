@@ -133,7 +133,7 @@ pub mod get_pkgcoords {
         /// # Ok(())
         /// # }
         /// ```
-        pub fn site_opt<I>(mut self, site: Option<String>) -> Self
+        pub fn site_opt<I>(mut self, site: Option<I>) -> Self
         where
             I: Into<String>,
         {
