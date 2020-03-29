@@ -1,5 +1,9 @@
+//! `withs` exports `get_withs::Options`, used to provide query parameters to
+//! the `ClientService.get_withs` method, `add_withs::Options`, used to provide
+//! parameters to the `ClientService.add_withs` method, and `set_withs::Options` used to
+//! provide parameters to the `ClientService.set_withs` method.
 use super::*;
-
+/// Exports `Options` struct, used to pass query parameters to `ClientService.get_withs` method
 pub mod get_withs {
     /// Encapsulate the query parameters
     pub struct Options {
@@ -15,22 +19,17 @@ pub mod get_withs {
     }
 
     impl Options {
-        /// New up an instance of get_pkgcoords::Options given a name, order_by
-        /// order_direction, and limit
+        /// New up an instance of get_withs::Options
         ///
-        /// # Arguments
-        ///
-        /// * `name` - the optional name of the platform
-        /// * `level` - the optional field to level by
-        /// * `role`
-        /// * `platform`
-        /// * `site`
-        // /// * `search_mode`
-        /// * `order_by` - the optional direction to order by
-        ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_withs;
+        /// let options = get_withs::Options::new();
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new() -> Self {
             Self {
                 package: None,
@@ -44,48 +43,176 @@ pub mod get_withs {
                 order_direction: None,
             }
         }
-
-        pub fn package_opt(mut self, package: Option<String>) -> Self {
-            self.package = package;
+        /// Set package option on `Option` instance, following the owned builder
+        /// pattern
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_withs;
+        /// let options = get_withs::Options::new()
+        ///                                .package_opt(Some("maya"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
+        pub fn package_opt<I>(mut self, package: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            self.package = package.map(|p| p.into());
             self
         }
-
-        pub fn level_opt(mut self, level: Option<String>) -> Self {
-            self.level = level;
+        /// Set level option on `Option` instance, following the owned builder
+        /// pattern
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_withs;
+        /// let options = get_withs::Options::new()
+        ///                                .level_opt(Some("dev01"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
+        pub fn level_opt<I>(mut self, level: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            self.level = level.map(|l| l.into());
             self
         }
-        pub fn role_opt(mut self, role: Option<String>) -> Self {
-            self.role = role;
+        /// Set role option on `Option` instance.
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_withs;
+        /// let options = get_withs::Options::new()
+        ///                                .role_opt(Some("model"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
+        pub fn role_opt<I>(mut self, role: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            self.role = role.map(|r| r.into());
             self
         }
-        pub fn platform_opt(mut self, platform: Option<String>) -> Self {
-            self.platform = platform;
+        /// Set platform option on `Option` instance, limiting the withs search to those
+        /// results set for the provided platform, if Some; otherwise searching for any results
+        /// with any platform.
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_withs;
+        /// let options = get_withs::Options::new()
+        ///                                .platform_opt(Some("cent7_64"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
+        pub fn platform_opt<I>(mut self, platform: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            self.platform = platform.map(|p| p.into());
             self
         }
-        pub fn site_opt(mut self, site: Option<String>) -> Self {
-            self.site = site;
+        /// Set site option for the query.
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_withs;
+        /// let options = get_withs::Options::new()
+        ///                                .site_opt(Some("playa"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
+        pub fn site_opt<I>(mut self, site: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            self.site = site.map(|s| s.into());
             self
         }
         // pub fn search_mode_opt(mut self, search_mode: Option<String>) -> Self {
         //     self.search_mode = search_mode;
         //     self
         // }
+        /// Set limit option, providing the max number of results returned by the
+        /// query
+        ///
+        /// pattern
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_withs;
+        /// let options = get_withs::Options::new()
+        ///                                .limit_opt(Some(1));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn limit_opt(mut self, limit: Option<i32>) -> Self {
             self.limit = limit;
             self
         }
-        pub fn order_by_opt(mut self, order_by: Option<String>) -> Self {
-            self.order_by = order_by;
+        /// Set order_by option, providing the field that the results will be sorted on.
+        ///
+        /// pattern
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_withs;
+        /// let options = get_withs::Options::new()
+        ///                                .order_by_opt(Some("package"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
+        pub fn order_by_opt<I>(mut self, order_by: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            self.order_by = order_by.map(|o| o.into());
             self
         }
-        pub fn order_direction_opt(mut self, direction: Option<String>) -> Self {
-            self.order_direction = direction;
+        /// Set order_direction option, providing the direction that results will be sorted
+        /// in, working in concert with `order_by`.
+        ///
+        /// pattern
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_withs;
+        /// let options = get_withs::Options::new()
+        ///                                .order_direction_opt(Some("asc"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
+        pub fn order_direction_opt<I>(mut self, direction: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            self.order_direction = direction.map(|d| d.into());
             self
         }
     }
-
+}
+pub(crate) mod get_withs_impl {
     use super::*;
-    pub async fn cmd(
+    pub(crate) async fn cmd(
         grpc_client: &mut ClientService,
         options: get_withs::Options,
     ) -> Result<Vec<FindWithsRow>, Box<dyn std::error::Error>> {
@@ -144,8 +271,9 @@ pub mod get_withs {
     }
 }
 
+/// Exports `Options` struct, used to pass parameters to the `ClientService.add_withs` method
 pub mod add_withs {
-    /// Encapsulate the query parameter for adding withs
+    /// Encapsulate the parameters for adding withs
     pub struct Options {
         pub vpin_id: i64,
         pub withs: Vec<String>,
@@ -154,23 +282,23 @@ pub mod add_withs {
     }
 
     impl Options {
-        /// New up an instance of add_withs::Options given a name, order_by
-        /// order_direction, and limit
+        /// New up an instance of add_withs::Options given a versionpin id, a vector of with package names, and author
         ///
-        /// # Arguments
+        /// pattern
         ///
-        /// * `names` - vector of withs names
-        /// * `author` - name of the person who authored the new withs
-        ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::add_withs;
+        /// let options = add_withs::Options::new(15321, vec!["modelpipeline", "modelpublish"], "jgerber");
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new<I>(vpin_id: i64, withs: Vec<I>, author: I) -> Self
         where
             I: Into<String>,
         {
             let withs = withs.into_iter().map(|n| n.into()).collect::<Vec<_>>();
-            //
 
             Self {
                 vpin_id,
@@ -180,12 +308,19 @@ pub mod add_withs {
             }
         }
 
-        /// Update comment with option wrapped type implementing
-        /// Into<String>
+        /// Add an optional comment to the Option instance
         ///
-        /// # Arguments
+        /// pattern
         ///
-        /// * `comment` - The optional comment associated with the commit
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::add_withs;
+        /// let options = add_withs::Options::new(15321, vec!["modelpipeline", "modelpublish"], "jgerber")
+        ///                             .comment_opt(Some("adding modelpipeline and publish as withs to 15321"));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn comment_opt<I>(mut self, comment: Option<I>) -> Self
         where
             I: Into<String>,
@@ -195,14 +330,15 @@ pub mod add_withs {
             self
         }
     }
-
+}
+pub(crate) mod add_withs_impl {
     use super::*;
     use crate::{AddReply, WithsAddRequest};
     pub async fn cmd(
         grpc_client: &mut ClientService,
-        options: Options,
+        options: add_withs::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        let Options {
+        let add_withs::Options {
             vpin_id,
             withs,
             author,

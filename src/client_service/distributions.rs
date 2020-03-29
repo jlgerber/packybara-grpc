@@ -1,5 +1,10 @@
+//! distributions module exports the `get_distributions::Options`, used
+//! to define query options for the `get_distributions` method on the `ClientService`
 use super::*;
 
+/// get_distributions provides Options, which provides a builder interface for setting
+/// optional query parameters for the `get_distributions` method on the `ClientService`
+/// struct.
 pub mod get_distributions {
     /// Encapsulate the query parameters
     pub struct Options {
@@ -10,18 +15,7 @@ pub mod get_distributions {
 
     impl Options {
         /// New up an instance of get_platform::Options given a name, order_by
-        /// order_direction, and limit
-        ///
-        /// # Arguments
-        ///
-        /// * `name` - the optional name of the platform
-        /// * `order_by` - the optional field to order by
-        /// * `order_direction` - the optional direction to order by
-        /// * `limit` - the optional limit
-        ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// order_direction, and limit.
         pub fn new() -> Self {
             Self {
                 package: None,
@@ -29,16 +23,59 @@ pub mod get_distributions {
                 order_direction: None,
             }
         }
-
+        /// Set an optional package
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::client_service::get_distributions;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_distributions::Options::new()
+        ///                  .package_opt(Some("maya".into()));
+        ///
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn package_opt(mut self, package: Option<String>) -> Self {
             self.package = package;
             self
         }
-
+        /// Set an optional version.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::client_service::get_distributions;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_distributions::Options::new()
+        ///                  .package_opt(Some("maya".into()))
+        ///                  .version_opt("1.2.3".into());
+        ///
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn version_opt(mut self, version: Option<String>) -> Self {
             self.version = version;
             self
         }
+        /// Set an optional `order_direction`.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::client_service::get_distributions;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_distributions::Options::new()
+        ///                  .package_opt(Some("maya".into()))
+        ///                  .version_opt("1.2.3".into())
+        ///                  .order_direction_opt(Some("up".into()));
+        ///
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn order_direction_opt(mut self, direction: Option<String>) -> Self {
             self.order_direction = direction;
             self
@@ -53,7 +90,8 @@ pub mod get_distributions {
         //     self
         // }
     }
-
+}
+pub(crate) mod get_distributions_impl {
     use super::*;
     pub async fn cmd(
         grpc_client: &mut ClientService,

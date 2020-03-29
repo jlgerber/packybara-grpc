@@ -9,15 +9,16 @@
 //! with an independent connection pool like pgbouncer or pgpooler, although I have not yet done any
 //! tests.
 //!
-//! For gRPC, I use [Tonic](https://github.com/hyperium/tonic), which relies on `prost` for the protocol
+//! For gRPC, packybara-grpc uses [Tonic](https://github.com/hyperium/tonic), which relies on `prost` for the protocol
 //! buffer implementation, `hyper` for http2, and `tokio` for the async implementation.
-pub use pb::packybara_client::PackybaraClient;
+pub(crate) use pb::packybara_client::PackybaraClient;
 pub use pb::packybara_server::{Packybara, PackybaraServer};
-pub use pb::{
+
+pub(crate) use pb::{
     AddReply, LevelsAddRequest, PackagesAddReply, PackagesAddRequest, PlatformsAddRequest,
     RolesAddRequest, SitesAddRequest, VersionPinsAddRequest, WithsAddRequest,
 };
-pub use pb::{
+pub(crate) use pb::{
     ChangesQueryReply, ChangesQueryRequest, ChangesQueryRow, Coords, DistributionsQueryReply,
     DistributionsQueryRequest, DistributionsQueryRow, LevelsQueryReply, LevelsQueryRequest,
     LevelsQueryRow, PackagesQueryReply, PackagesQueryRequest, PackagesQueryRow,
@@ -30,14 +31,17 @@ pub use pb::{
     VersionPinsQueryRequest, VersionPinsQueryRow, VersionPinsSetReply, VersionPinsSetRequest,
     WithsQueryReply, WithsQueryRequest, WithsQueryRow,
 };
-pub mod pb {
+pub(crate) mod pb {
     tonic::include_proto!("packybara");
 }
 
 pub mod service;
+/// Used to build servers
 pub use service::PackybaraService;
 pub mod client_service;
 pub use client_service::ClientService;
+pub use client_service::*;
+
 pub mod database_config;
 pub mod url;
 pub mod url_builder;

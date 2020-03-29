@@ -1,7 +1,11 @@
+//! `versionpin` exports the `get_versionpin::Options` struct, used to provide query
+//! parameters to the `ClientService.get_versionpin` method.
 use super::*;
 
+/// `get_versionpin::Option` provides query parameters to the `ClientService.get_versionpin`
+/// method
 pub mod get_versionpin {
-    /// Encapsulate the query parameters
+    /// Encapsulate the query parameters for `ClientService.get_versionpin`
     pub struct Options {
         pub package: String,
         pub level: Option<String>,
@@ -13,13 +17,14 @@ pub mod get_versionpin {
     impl Options {
         /// New up an instance of VetVersionPinOptions given a package name
         ///
-        /// # Arguments
-        ///
-        /// * `package` - the name of the package
-        ///
-        /// # Returns
-        ///
-        /// * GetVersionPinOptions instance
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpin;
+        /// let options = get_versionpin::Options::new("maya");
+        /// # Ok(())
+        /// #}
+        /// ```
         pub fn new<I>(package: I) -> Self
         where
             I: Into<String>,
@@ -36,13 +41,15 @@ pub mod get_versionpin {
         /// Given a mutable instance of Self and an Option wrapped level,
         /// set level and return Self, following the common builder pattern.
         ///
-        /// # Arguments
-        ///
-        /// * `level` - An option wrapped type that implements Into<String>
-        ///
-        /// # Returns
-        ///
-        /// * Self
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpin;
+        /// let options = get_versionpin::Options::new("maya")
+        ///                               .level_opt(Some("dev01"));
+        /// # Ok(())
+        /// #}
+        /// ```
         pub fn level_opt<I>(mut self, level: Option<I>) -> Self
         where
             I: Into<String>,
@@ -54,13 +61,16 @@ pub mod get_versionpin {
         /// Given a mutable instance of Self and an Option wrapped role,
         /// set role and return Self, following the common builder pattern.
         ///
-        /// # Arguments
-        ///
-        /// * `role` - An option wrapped type that implements Into<String>
-        ///
-        /// # Returns
-        ///
-        /// * Self
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpin;
+        /// let options = get_versionpin::Options::new("maya")
+        ///                               .level_opt(Some("dev01"))
+        ///                               .role_opt(Some("model"));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn role_opt<I>(mut self, role: Option<I>) -> Self
         where
             I: Into<String>,
@@ -72,13 +82,16 @@ pub mod get_versionpin {
         /// Given a mutable instance of Self and an Option wrapped platform,
         /// set platform and return Self, following the common builder pattern.
         ///
-        /// # Arguments
-        ///
-        /// * `platform` - An option wrapped type that implements Into<String>
-        ///
-        /// # Returns
-        ///
-        /// * Self
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpin;
+        /// let options = get_versionpin::Options::new("maya")
+        ///                               .level_opt(Some("dev01"))
+        ///                               .platform_opt(Some("cent7_64"));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn platform_opt<I>(mut self, platform: Option<I>) -> Self
         where
             I: Into<String>,
@@ -90,13 +103,16 @@ pub mod get_versionpin {
         /// Given a mutable instance of Self and an Option wrapped site,
         /// set site and return Self, following the common builder pattern.
         ///
-        /// # Arguments
-        ///
-        /// * `site` - An option wrapped type that implements Into<String>
-        ///
-        /// # Returns
-        ///
-        /// * Self
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpin;
+        /// let options = get_versionpin::Options::new("maya")
+        ///                               .level_opt(Some("dev01"))
+        ///                               .site_opt(Some("portland"));
+        /// # Ok(())
+        /// #}
+        /// ```
         pub fn site_opt<I>(mut self, site: Option<I>) -> Self
         where
             I: Into<String>,
@@ -105,9 +121,10 @@ pub mod get_versionpin {
             self
         }
     }
-
+}
+pub(crate) mod get_versionpin_impl {
     use super::*;
-    pub(crate) async fn cmd(
+    pub async fn cmd(
         grpc_client: &mut ClientService,
         options: get_versionpin::Options,
     ) -> Result<FindVersionPinsRow, Box<dyn std::error::Error>> {

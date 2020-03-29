@@ -1,5 +1,8 @@
+//! `platforms` module exports `get_platforms::Options` providing query parameters for `ClientService.get_platforms`
+//! and `add_platforms::Options` providing parameters for `ClientService.add_platforms`
 use super::*;
 
+/// Exports `Options`, used to set query parameters for `ClientService.get_platforms`
 pub mod get_platforms {
     /// Encapsulate the query parameters
     pub struct Options {
@@ -10,19 +13,18 @@ pub mod get_platforms {
     }
 
     impl Options {
-        /// New up an instance of get_platform::Options given a name, order_by
-        /// order_direction, and limit
+        /// New up an instance of get_platforms::Options
         ///
-        /// # Arguments
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_platforms;
         ///
-        /// * `name` - the optional name of the platform
-        /// * `order_by` - the optional field to order by
-        /// * `order_direction` - the optional direction to order by
-        /// * `limit` - the optional limit
+        /// # fn dox() -> std::io::Result<()> {
         ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// let options - get_platforms::Options::new();
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new() -> Self {
             Self {
                 name: None,
@@ -32,26 +34,83 @@ pub mod get_platforms {
             }
         }
 
+        /// Set an optional name of the platform or platforms we are querying for. May
+        /// use `%` in the query as a wildcard.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_platforms;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_platforms::Options::new()
+        ///                              .name_opt(Some("maya%"));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn name_opt(mut self, name: Option<String>) -> Self {
             self.name = name;
             self
         }
 
+        /// Set the direction that results will be returned by the server.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_platforms;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_platforms::Options::new()
+        ///                              .package_opt(Some("maya"))
+        ///                              .order_direction_opt(Some("asc"));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn order_direction_opt(mut self, direction: Option<String>) -> Self {
             self.order_direction = direction;
             self
         }
-
+        /// Set the optional field to order the results of our query by. This
+        /// corresponds with the sql `ORDER BY` fragment.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_platforms;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_platforms::Options::new()
+        ///                              .package_opt(Some("maya"))
+        ///                              .order_by_opt(Some("package"));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn order_by_opt(mut self, order_by: Option<String>) -> Self {
             self.order_by = order_by;
             self
         }
+        /// Set an optional limit on the number of results returnd by the
+        /// `ClientService.get_platforms` method.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_platformss;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_platforms::Options::new()
+        ///                              .limit_opt(Some(2));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn limit_opt(mut self, limit: Option<i32>) -> Self {
             self.limit = limit;
             self
         }
     }
-
+}
+pub(crate) mod get_platforms_impl {
     use super::*;
 
     pub async fn cmd(
@@ -85,6 +144,7 @@ pub mod get_platforms {
     }
 }
 
+/// Exports `Options`, used to set parameters for `ClientService.add_platforms`
 pub mod add_platforms {
     /// Encapsulate the query parameter for adding platforms
     pub struct Options {
@@ -97,14 +157,16 @@ pub mod add_platforms {
         /// New up an instance of add_platforms::Options given a name, order_by
         /// order_direction, and limit
         ///
-        /// # Arguments
+        /// # Example
+        /// ```
+        /// use packybara_grpc::add_platforms;
         ///
-        /// * `names` - vector of platforms names
-        /// * `author` - name of the person who authored the new platforms
+        /// # fn dox() -> std::io::Result<()> {
         ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// let options - add_platforms::Options::new(vec!["cent7_64", "cent8_64"]);
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new<I>(names: Vec<I>, author: I) -> Self
         where
             I: Into<String>,
@@ -122,9 +184,17 @@ pub mod add_platforms {
         /// Update comment with option wrapped type implementing
         /// Into<String>
         ///
-        /// # Arguments
+        /// # Example
+        /// ```
+        /// use packybara_grpc::add_platforms;
         ///
-        /// * `comment` - The optional comment associated with the commit
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - add_platforms::Options::new(vec!["cent7_64", "cent8_64"])
+        ///                                 .comment_opt("adding new linux platforms");
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn comment_opt<I>(mut self, comment: Option<I>) -> Self
         where
             I: Into<String>,
@@ -134,14 +204,15 @@ pub mod add_platforms {
             self
         }
     }
-
+}
+pub(crate) mod add_platforms_impl {
     use super::*;
     use crate::{AddReply, PlatformsAddRequest};
     pub async fn cmd(
         grpc_client: &mut ClientService,
-        options: Options,
+        options: add_platforms::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        let Options {
+        let add_platforms::Options {
             names,
             author,
             comment,

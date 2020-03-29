@@ -1,5 +1,8 @@
+//! `sites` module exports `get_sites::Options` providing query parameters for `ClientService.get_sites`
+//! and `add_sites::Options` providing parameters for `ClientService.add_sites`
 use super::*;
 
+/// Exports `Options`, used to set query parameters for `ClientService.get_sites`
 pub mod get_sites {
     /// Encapsulate the query parameters
     pub struct Options {
@@ -7,32 +10,48 @@ pub mod get_sites {
     }
 
     impl Options {
-        /// New up an instance of get_roles::Options given a role, category, order_by
-        /// order_direction, and limit
+        /// New up an instance of get_sites::Options.
         ///
-        /// # Arguments
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_sites;
         ///
-        /// * `role` - the optional name of the role
-        /// * `category` - the optional name of the category
-        /// * `order_by` - the optional field to order by
-        /// * `order_direction` - the optional direction to order by
-        /// * `limit` - the optional limit
+        /// # fn dox() -> std::io::Result<()> {
         ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// let options = get_sites::Options::new();
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new() -> Self {
             Self { name: None }
         }
 
-        pub fn name_opt(mut self, name: Option<String>) -> Self {
-            self.name = name;
+        /// Set the optional `name` parameter to either `None` or `Some(value)`
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_sites;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options = get_sites::Options::new().name_opt(Some("porltand"));
+        /// # Ok(())
+        /// # }
+        /// ```
+        pub fn name_opt<I>(mut self, name: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            self.name = name.map(|n| n.into());
             self
         }
     }
-
+}
+pub(crate) mod get_sites_impl {
     use super::*;
-
+    /// Given a mutable reference to the ClientService instance and
+    /// query parameters defined by `get_sites::Options`, retrieve all matching
+    /// sites from pakcybara
     pub async fn cmd(
         grpc_client: &mut ClientService,
         options: get_sites::Options,
@@ -54,8 +73,9 @@ pub mod get_sites {
     }
 }
 
+/// Exports `Options`, used to set  parameters for `ClientService.add_sites`
 pub mod add_sites {
-    /// Encapsulate the query parameter for adding sites
+    /// Encapsulate the parameters for adding sites
     pub struct Options {
         pub names: Vec<String>,
         pub author: String,
@@ -63,23 +83,23 @@ pub mod add_sites {
     }
 
     impl Options {
-        /// New up an instance of add_sites::Options given a name, order_by
-        /// order_direction, and limit
+        /// New up an instance of add_sites::Options given a vector of names and the author
         ///
-        /// # Arguments
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_sites;
         ///
-        /// * `names` - vector of sites names
-        /// * `author` - name of the person who authored the new sites
+        /// # fn dox() -> std::io::Result<()> {
         ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// let options = get_sites::Options::new(vec!["portland", "hyderabad"], "jgerber");
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new<I>(names: Vec<I>, author: I) -> Self
         where
             I: Into<String>,
         {
             let names = names.into_iter().map(|n| n.into()).collect::<Vec<_>>();
-            //
 
             Self {
                 names,
@@ -88,12 +108,19 @@ pub mod add_sites {
             }
         }
 
-        /// Update comment with option wrapped type implementing
-        /// Into<String>
+        /// Update comment with an optional value
         ///
-        /// # Arguments
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_sites;
         ///
-        /// * `comment` - The optional comment associated with the commit
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options = get_sites::Options::new(vec!["portland", "hyderabad"], "jgerber")
+        ///                             .comment_opt("adds portland and hyderabad");
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn comment_opt<I>(mut self, comment: Option<I>) -> Self
         where
             I: Into<String>,
@@ -103,14 +130,15 @@ pub mod add_sites {
             self
         }
     }
-
+}
+pub(crate) mod add_sites_impl {
     use super::*;
     use crate::{AddReply, SitesAddRequest};
-    pub async fn cmd(
+    pub(crate) async fn cmd(
         grpc_client: &mut ClientService,
-        options: Options,
+        options: add_sites::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        let Options {
+        let add_sites::Options {
             names,
             author,
             comment,

@@ -1,16 +1,12 @@
 [package]
 name = "packybara-grpc"
-version = "0.30.0"
+version = "0.31.0"
 authors = ["jlgerber <jlgerber@gmail.com>"]
 edition = "2018"
 
 [[bin]] 
 name = "packybara-grpc-server"
 path = "src/bin/server.rs"
-
-[[bin]] 
-name = "packybara-grpc-client"
-path = "src/bin/client.rs"
 
 [dependencies]
 tonic = "0.1"

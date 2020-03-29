@@ -1,7 +1,12 @@
+//! `versionpins` exports `get_versionpins::Options`, used to provide query parameters to
+//! the `ClientService.get_versionpins` method, `add_versionpins::Options`, used to provide
+//! parameters to the `ClientService.add_versionpins` method, and `set_versionpins::Options` used to
+//! provide parameters to the `ClientService.set_versionpins` method.
 use super::*;
 
+/// Exports `Options` struct, used to pass query parameters to `ClientService.get_versionpins` method
 pub mod get_versionpins {
-    /// Encapsulate the query parameters
+    /// Encapsulate the query parameters for `ClientService.get_versionpins`
     pub struct Options {
         pub package: Option<String>,
         pub version: Option<String>,
@@ -18,13 +23,15 @@ pub mod get_versionpins {
     impl Options {
         /// New up an instance of get_versionpins::Option
         ///
-        /// # Arguments
-        ///
-        /// * `package` - the name of the package
-        ///
-        /// # Returns
-        ///
-        /// * GetVersionPinOptions instance
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new();
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new() -> Self {
             Self {
                 package: None,
@@ -39,6 +46,18 @@ pub mod get_versionpins {
                 order_direction: None,
             }
         }
+        /// set package option on `Options` instance, following builder pattern.
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn package_opt<I>(mut self, package: Option<I>) -> Self
         where
             I: Into<String>,
@@ -46,7 +65,20 @@ pub mod get_versionpins {
             self.package = package.map(|x| x.into());
             self
         }
-
+        /// Set version option on `Option` instance, following owned builder
+        /// pattern
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"))
+        ///                                .versoin_opt(Some("2018.3.4"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn version_opt<I>(mut self, version: Option<I>) -> Self
         where
             I: Into<String>,
@@ -54,16 +86,19 @@ pub mod get_versionpins {
             self.version = version.map(|x| x.into());
             self
         }
-        /// Given a mutable instance of Self and an Option wrapped level,
-        /// set level and return Self, following the common builder pattern.
+        /// set level option on `Option` instance, following owned builder pattern
         ///
-        /// # Arguments
-        ///
-        /// * `level` - An option wrapped type that implements Into<String>
-        ///
-        /// # Returns
-        ///
-        /// * Self
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"))
+        ///                                .level_opt("dev01");
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn level_opt<I>(mut self, level: Option<I>) -> Self
         where
             I: Into<String>,
@@ -72,16 +107,20 @@ pub mod get_versionpins {
             self
         }
 
-        /// Given a mutable instance of Self and an Option wrapped role,
-        /// set role and return Self, following the common builder pattern.
+        /// set role option on `Option` instance, following owned builder pattern
         ///
-        /// # Arguments
-        ///
-        /// * `role` - An option wrapped type that implements Into<String>
-        ///
-        /// # Returns
-        ///
-        /// * Self
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"))
+        ///                                .level_opt("dev01")
+        ///                                .role_opt("model");
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn role_opt<I>(mut self, role: Option<I>) -> Self
         where
             I: Into<String>,
@@ -90,16 +129,20 @@ pub mod get_versionpins {
             self
         }
 
-        /// Given a mutable instance of Self and an Option wrapped platform,
-        /// set platform and return Self, following the common builder pattern.
+        /// set platform option on `Option` instance, following owned builder pattern
         ///
-        /// # Arguments
-        ///
-        /// * `platform` - An option wrapped type that implements Into<String>
-        ///
-        /// # Returns
-        ///
-        /// * Self
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"))
+        ///                                .level_opt("dev01")
+        ///                                .platform_opt("cent7_64");
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn platform_opt<I>(mut self, platform: Option<I>) -> Self
         where
             I: Into<String>,
@@ -108,16 +151,20 @@ pub mod get_versionpins {
             self
         }
 
-        /// Given a mutable instance of Self and an Option wrapped site,
-        /// set site and return Self, following the common builder pattern.
+        /// set site option on `Option` instance, following owned builder pattern
         ///
-        /// # Arguments
-        ///
-        /// * `site` - An option wrapped type that implements Into<String>
-        ///
-        /// # Returns
-        ///
-        /// * Self
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"))
+        ///                                .level_opt("dev01")
+        ///                                .site_opt("portland");
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn site_opt<I>(mut self, site: Option<I>) -> Self
         where
             I: Into<String>,
@@ -125,30 +172,87 @@ pub mod get_versionpins {
             self.site = site.map(|x| x.into());
             self
         }
-
+        /// set is_isolate_facility option on `Option` instance, following owned builder pattern.
+        /// This option affects the query, limiting the extent to the facility regardless of the
+        /// direction, if the query is rooted in the facility
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"))
+        ///                                .level_opt("dev01")
+        ///                                .platform_opt("cent7_64")
+        ///                                .isolate_facility_opt(Some(true));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn isolate_facility_opt(mut self, isolate: Option<bool>) -> Self {
             self.isolate_facility = isolate;
             self
         }
-
+        /// set search mode option on `Option` instance, following owned builder pattern
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"))
+        ///                                .level_opt("dev01")
+        ///                                .search_mode_opt("ancestor");
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn search_mode_opt(mut self, mode: Option<String>) -> Self {
             self.search_mode = mode;
             self
         }
-
+        /// Optionally set the field to order the query results by on the `Option` instance,
+        /// following owned builder pattern
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"))
+        ///                                .level_opt("dev01")
+        ///                                .porder_on_opt("package");
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn order_by_opt(mut self, order_by: Option<String>) -> Self {
             self.order_by = order_by;
             self
         }
-
+        /// set order_direction option on `Option` instance, following owned builder pattern
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::get_versionpins;
+        /// let options = get_versionpins::Options::new()
+        ///                                .package_opt(Some("maya"))
+        ///                                .level_opt("dev01")
+        ///                                .order_direction_opt("asc");
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn order_direction_opt(mut self, order_dir: Option<String>) -> Self {
             self.order_direction = order_dir;
             self
         }
     }
-
+}
+pub(crate) mod get_versionpins_impl {
     use super::*;
-    pub async fn cmd(
+    pub(crate) async fn cmd(
         grpc_client: &mut ClientService,
         options: get_versionpins::Options,
     ) -> Result<Vec<FindAllVersionPinsRow>, Box<dyn std::error::Error>> {
@@ -216,8 +320,10 @@ pub mod get_versionpins {
     }
 }
 
+/// Exports `Options` struct which provides parameters to the `ClientService.add_versionpins`
+/// method.
 pub mod add_versionpins {
-    /// Encapsulate the query parameter for adding sites
+    /// Encapsulate the parameters for adding sites
     pub struct Options {
         pub distribution: String,
         pub levels: Vec<String>,
@@ -229,20 +335,17 @@ pub mod add_versionpins {
     }
 
     impl Options {
-        /// New up an instance of add_sites::Options given a name, order_by
-        /// order_direction, and limit
+        /// New up an instance of add_sites::Options a distribution and author
         ///
-        /// # Arguments
-        ///
-        /// * `distribution` - package-version
-        /// * `levels` - zero or more levels to create version pin at
-        /// * `roles` - zero or more roles to create version pin at
-        /// * `platforms` - zero or more platforms to create version pin at
-        /// * `author` - name of the person who authored the new sites
-        ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::add_versionpins;
+        /// let options = add_versionpins::Options::new("wam-2.1.2", "jgerber");
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new<I>(distribution: I, author: I) -> Self
         where
             I: Into<String>,
@@ -257,7 +360,18 @@ pub mod add_versionpins {
                 comment: None,
             }
         }
-
+        /// Set one or more levels in which to set versionpins
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::add_versionpins;
+        /// let options = add_versionpins::Options::new("wam-2.3.1", "jgerber")
+        ///                                 .levels(vec!["dev01","plasma"]);
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn levels<I>(mut self, levels: Vec<I>) -> Self
         where
             I: Into<String>,
@@ -266,7 +380,19 @@ pub mod add_versionpins {
             self.levels = levels;
             self
         }
-
+        /// Set one or more roles in which to set versionpins
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::add_versionpins;
+        /// let options = add_versionpins::Options::new("wam-2.3.1", "jgerber")
+        ///                                 .levels(vec!["dev01","plasma"])
+        ///                                 .roles(vec!["model"]);
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn roles<I>(mut self, roles: Vec<I>) -> Self
         where
             I: Into<String>,
@@ -276,6 +402,20 @@ pub mod add_versionpins {
             self
         }
 
+        /// Set one or more platforms in which to set versionpins
+        ///
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::add_versionpins;
+        /// let options = add_versionpins::Options::new("wam-2.3.1", "jgerber")
+        ///                                 .levels(vec!["dev01","plasma"])
+        ///                                 .roles(vec!["model"])
+        ///                                 .platforms(vec!["cent6_64", "cent7_64"]);
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn platforms<I>(mut self, platforms: Vec<I>) -> Self
         where
             I: Into<String>,
@@ -284,7 +424,22 @@ pub mod add_versionpins {
             self.platforms = platforms;
             self
         }
-
+        /// Set one or more sites in which to set versionpins
+        ///
+        /// # Example
+        ///
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::add_versionpins;
+        /// let options = add_versionpins::Options::new("wam-2.3.1", "jgerber")
+        ///                                 .levels(vec!["dev01","plasma"])
+        ///                                 .roles(vec!["model"])
+        ///                                 .platforms(vec!["cent6_64", "cent7_64"])
+        ///                                 .sites(vec!["portlan", "hyderabad", "playa"]);
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn sites<I>(mut self, sites: Vec<I>) -> Self
         where
             I: Into<String>,
@@ -293,12 +448,22 @@ pub mod add_versionpins {
             self.sites = sites;
             self
         }
-        /// Update comment with option wrapped type implementing
-        /// Into<String>
+        /// Optionally set a comment when adding versionpins
         ///
-        /// # Arguments
-        ///
-        /// * `comment` - The optional comment associated with the commit
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::add_versionpins;
+        /// let options = add_versionpins::Options::new("wam-2.3.1", "jgerber")
+        ///                                 .levels(vec!["dev01","plasma"])
+        ///                                 .roles(vec!["model"])
+        ///                                 .platforms(vec!["cent6_64", "cent7_64"])
+        ///                                 .sites(vec!["portlan", "hyderabad", "playa"])
+        ///                                 .comment_opt(Some("creating a versionpin for whatever"));
+        ///                              
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn comment_opt<I>(mut self, comment: Option<I>) -> Self
         where
             I: Into<String>,
@@ -308,14 +473,15 @@ pub mod add_versionpins {
             self
         }
     }
-
+}
+pub(crate) mod add_versionpins_impl {
     use super::*;
     use crate::{AddReply, VersionPinsAddRequest};
-    pub async fn cmd(
+    pub(crate) async fn cmd(
         grpc_client: &mut ClientService,
-        options: Options,
+        options: add_versionpins::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        let Options {
+        let add_versionpins::Options {
             distribution,
             levels,
             roles,
@@ -340,8 +506,10 @@ pub mod add_versionpins {
     }
 }
 
+/// Exports `Options` struct which provides parameters to the `ClientService.set_versionpins`
+/// method.
 pub mod set_versionpins {
-    /// Encapsulate the query parameter for adding sites
+    /// Encapsulate the query parameters for updating sites
     pub struct Options {
         pub vpin_ids: Vec<i64>,
         pub dist_ids: Vec<i64>,
@@ -350,20 +518,17 @@ pub mod set_versionpins {
     }
 
     impl Options {
-        /// New up an instance of add_sites::Options given a name, order_by
-        /// order_direction, and limit
+        /// New up an instance of set_versionpins::Options given a vector of versionpin ids,
+        /// a vector of distributions ids, and an author and comment
         ///
-        /// # Arguments
-        ///
-        /// * `vpin_ids` - vector of versionpin ids
-        /// * `dist_ids` - zero or more distribution ids
-        /// * `roles` - zero or more roles to create version pin at
-        /// * `platforms` - zero or more platforms to create version pin at
-        /// * `author` - name of the person who authored the new sites
-        ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// # Example
+        /// ```
+        /// # fn dox() -> std::io::Result<()> {
+        /// use packybara_grpc::set_versionpins;
+        /// let options = set_versionpins::Options::new( vec![12345], vec!["141556"], "jgerber", "stuff and things");
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new<I>(vpin_ids: Vec<i64>, dist_ids: Vec<i64>, author: I, comment: I) -> Self
         where
             I: Into<String>,
@@ -376,14 +541,15 @@ pub mod set_versionpins {
             }
         }
     }
-
+}
+pub(crate) mod set_versionpins_impl {
     use super::*;
     use crate::{VersionPinsSetReply, VersionPinsSetRequest};
-    pub async fn cmd(
+    pub(crate) async fn cmd(
         grpc_client: &mut ClientService,
-        options: Options,
+        options: set_versionpins::Options,
     ) -> Result<bool, Box<dyn std::error::Error>> {
-        let Options {
+        let set_versionpins::Options {
             vpin_ids,
             dist_ids,
             author,

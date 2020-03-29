@@ -1,5 +1,8 @@
+//! `revisions` module exports `get_revisions::Options` providing query parameters for `ClientService.get_revisions`
+//! and `add_revisions::Options` providing parameters for `ClientService.add_revisions`
 use super::*;
 
+/// Exports `Options`, used to set query parameters for `ClientService.get_revisions`
 pub mod get_revisions {
     use super::*;
     /// Encapsulate the query parameters
@@ -13,22 +16,18 @@ pub mod get_revisions {
     }
 
     impl Options {
-        /// New up an instance of get_pkgcoords::Options given a name, order_by
-        /// order_direction, and limit
+        /// New up an instance of get_revisions::Options
         ///
-        /// # Arguments
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_revisions;
         ///
-        /// * `name` - the optional name of the platform
-        /// * `level` - the optional field to level by
-        /// * `role`
-        /// * `platform`
-        /// * `site`
-        // /// * `search_mode`
-        /// * `order_by` - the optional direction to order by
+        /// # fn dox() -> std::io::Result<()> {
         ///
-        /// # Returns
-        ///
-        /// * Option instance
+        /// let options - get_revisions::Options::new();
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn new() -> Self {
             Self {
                 id: None,
@@ -40,34 +39,121 @@ pub mod get_revisions {
             }
         }
 
+        /// Set an optional id used to query for revisons by id.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_revisions;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_revisions::Options::new()
+        ///                              .id_opt(Some(2345566));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn id_opt(mut self, id: Option<i64>) -> Self {
             self.id = id;
             self
         }
-
+        /// Set an optional transaction id. Used to query for revisons by their transaction id.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_revisions;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_revisions::Options::new()
+        ///                              .transaction_id_opt(Some(321));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn transaction_id_opt(mut self, transaction_id: Option<i64>) -> Self {
             self.transaction_id = transaction_id;
             self
         }
-        pub fn author_opt(mut self, author: Option<String>) -> Self {
-            self.author = author;
+        /// Set an optional author. Used to query for revisons by their author.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_revisions;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_revisions::Options::new()
+        ///                              .author_opt(Some("jgerber"));
+        /// # Ok(())
+        /// # }
+        /// ```
+        pub fn author_opt<I>(mut self, author: Option<I>) -> Self
+        where
+            I: Into<String>,
+        {
+            self.author = author.map(|a| a.into());
             self
         }
+        /// Set an optional ordering. Used to set the field that results are sorted by on return.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_revisions;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_revisions::Options::new()
+        ///                              .author_opt(Some("jgerber"))
+        ///                              .order_by_opt(Some("author"));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn order_by_opt(mut self, order_by: Option<String>) -> Self {
             self.order_by = order_by;
             self
         }
+        /// Set an optional order direction. Used to control whether sorting is ascending or descending.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_revisions;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_revisions::Options::new()
+        ///                              .author_opt(Some("jgerber"))
+        ///                              .order_by_opt(Some("author"))
+        ///                              .order_direction_opt(Some("asc"));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn order_direction_opt(mut self, direction: Option<String>) -> Self {
             self.order_direction = direction;
             self
         }
+        /// Set an optional limit. Used to limit the max number of returned values.
+        ///
+        /// # Example
+        /// ```
+        /// use packybara_grpc::get_revisions;
+        ///
+        /// # fn dox() -> std::io::Result<()> {
+        ///
+        /// let options - get_revisions::Options::new()
+        ///                              .author_opt(Some("jgerber"))
+        ///                              .order_by_opt(Some("author"))
+        ///                              .limit_opt(Some(2));
+        /// # Ok(())
+        /// # }
+        /// ```
         pub fn limit_opt(mut self, limit: Option<i32>) -> Self {
             self.limit = limit;
             self
         }
     }
-
-    pub async fn cmd(
+}
+pub(crate) mod get_revisions_impl {
+    use super::*;
+    pub(crate) async fn cmd(
         grpc_client: &mut ClientService,
         options: get_revisions::Options,
     ) -> Result<Vec<FindAllRevisionsRow>, Box<dyn std::error::Error>> {

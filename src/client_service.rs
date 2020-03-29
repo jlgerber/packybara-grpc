@@ -78,21 +78,30 @@ pub use packages_xml::*;
 // NOTE:: this has some implications for applications that want to communicate
 // in multiple channels. If this becomes a requirement, we will have to
 // put an arc around client
+/// Api entry point for client code, ClientService implements methods that encapsulate communcation with
+/// the server. ClientService methods generally take a mutable reference to self, along with an
+/// options struct, defined in a namespace matching the name of the method.
+///
+/// # Example
+/// ```
+/// # async fn dox() -> std::io::Result<()>
+/// use packybara_gpi::client_service::get_changes;
+/// use packybara_gpi::ClientService;
+///
+/// let client = ClientService::new().await?;
+/// let changes = client.get_changes(
+///     get_changes::Options::new().transaction_id_opt(Some(2345))
+/// ).await?;
+///
+/// # Ok(())
+/// # }
+/// ```
 pub struct ClientService {
     client: PackybaraClient<Channel>,
 }
 
 impl ClientService {
     /// create a new client instance , given a url
-    ///
-    /// # Arguments
-    ///
-    /// * `url` - An instance of GrpcUrl
-    ///
-    /// # Returns
-    /// * Result wrapping
-    ///   * ClientService instance if successful
-    ///   * std::error::Error otherwise
     pub async fn new(url: grpcurl::GrpcUrl) -> Result<Self, Box<dyn std::error::Error>> {
         let url = url.as_str().to_string();
         let endpoint = Endpoint::try_from(url)?;
@@ -113,411 +122,520 @@ impl ClientService {
     }
     /// Retrieve versionpin from server, given GetVersionPinOptions instance
     ///
-    /// # Arguments
-    ///
-    /// * `options` - get_versionpin::Options instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - FindVersionPinsRow
-    /// - Err - Boxed std::error::Error
-    ///
     /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_versionpin;
     ///
-    /// ```ignore
-    /// let results = client.get_version_in(GetVersionPinOptions::new("maya").role("model")).await?;
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_version_pin(
+    ///     get_versionpin::Options::new("maya")
+    ///     .role_opt(Some("model")))
+    ///     .await?;
+    /// # Ok(())
+    /// # }
     /// ```
     pub async fn get_version_pin(
         &mut self,
         options: get_versionpin::Options,
     ) -> Result<FindVersionPinsRow, Box<dyn std::error::Error>> {
-        get_versionpin::cmd(self, options).await
+        get_versionpin_impl::cmd(self, options).await
     }
-    /// Retrieve a vector of versionpins from server, given GetVersionPinsOptions instance
+    /// Retrieve a vector of versionpins from server, given get_versionpin::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_versionpins;
     ///
-    /// * `options` - get_versionpins::Options instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - Vec<FindVersionPinsRow>
-    /// - Err - Boxed std::error::Error
-    ///
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_version_pins(
+    ///     get_versonpins::Option::new("maya")
+    ///     .role_opt(Some("model")))
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_version_pins(
         &mut self,
         options: get_versionpins::Options,
     ) -> Result<Vec<FindAllVersionPinsRow>, Box<dyn std::error::Error>> {
-        get_versionpins::cmd(self, options).await
+        get_versionpins_impl::cmd(self, options).await
     }
-    /// Retrieve a vector of Withs for the supplied verion pin from the server, given GetVersionPinWithsOptions instance
+    /// Retrieve a vector of Withs for the supplied verion pin from the server, given a versionpin_id
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
     ///
-    /// * `options` - get_versionpin_withs::Options instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - Vec<FindAllWithsRow>
-    /// - Err - Boxed std::error::Error
-    ///
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_version_pin_withs(12345).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_version_pin_withs(
         &mut self,
         versionpin_id: i64,
     ) -> Result<Vec<FindAllWithsRow>, Box<dyn std::error::Error>> {
         get_versionpin_withs::cmd(self, versionpin_id).await
     }
-    /// Retrieve a vector of Levels from the server, given GetLevelsOptions instance
+    /// Retrieve a vector of Levels from the server, given get_levels::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_levels;
     ///
-    /// * `options` - `get_levels::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindAllWithsRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_levels(
+    ///     get_levels::Option::new()
+    ///         .level_opt(Some("dev01"))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_levels(
         &mut self,
         options: get_levels::Options,
     ) -> Result<Vec<FindAllLevelsRow>, Box<dyn std::error::Error>> {
-        get_levels::cmd(self, options).await
+        get_levels_impl::cmd(self, options).await
     }
 
-    /// Retrieve a vector of Sites from the server, given GetSitesOptions instance
+    /// Retrieve a vector of Sites from the server, given get_sites::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_sites;
     ///
-    /// * `options` - `get_sites::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindAllSitesRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_sites(
+    ///     get_versonpin::Option::new("maya")
+    ///         .name_opt(Some("playa"))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_sites(
         &mut self,
         options: get_sites::Options,
     ) -> Result<Vec<FindAllSitesRow>, Box<dyn std::error::Error>> {
-        get_sites::cmd(self, options).await
+        get_sites_impl::cmd(self, options).await
     }
 
-    /// Retrieve a vector of Roles from the server, given GetRolesOptions instance
+    /// Retrieve a vector of Roles from the server, given Get_roles::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_roles;
     ///
-    /// * `options` - `get_roles::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindAllRolesRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_roles(
+    ///     get_roles::Option::new()
+    ///         .category_opt(Some("subcategory"))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_roles(
         &mut self,
         options: get_roles::Options,
     ) -> Result<Vec<FindAllRolesRow>, Box<dyn std::error::Error>> {
-        get_roles::cmd(self, options).await
+        get_roles_impl::cmd(self, options).await
     }
 
-    /// Retrieve a vector of Platforms from the server, given GetPlatformsOptions instance
+    /// Retrieve a vector of Platforms from the server, given get_platforms::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_platforms;
     ///
-    /// * `options` - `get_platforms::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindAllPlatformsRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_platforms(
+    ///     get_platforms::Option::new()
+    ///         .name_opt(Some("model"))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_platforms(
         &mut self,
         options: get_platforms::Options,
     ) -> Result<Vec<FindAllPlatformsRow>, Box<dyn std::error::Error>> {
-        get_platforms::cmd(self, options).await
+        get_platforms_impl::cmd(self, options).await
     }
 
-    /// Retrieve a vector of Packages from the server, given GetPackagesOptions instance
+    /// Retrieve a vector of Packages from the server, given get_packages::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_packages;
     ///
-    /// * `options` - `get_packages::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindAllPackagesRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_packages(
+    ///     get_packages::Option::new()
+    ///         .name_opt(Some("maya%"))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_packages(
         &mut self,
         options: get_packages::Options,
     ) -> Result<Vec<FindAllPackagesRow>, Box<dyn std::error::Error>> {
-        get_packages::cmd(self, options).await
+        get_packages_impl::cmd(self, options).await
     }
 
-    /// Retrieve a vector of Distributions from the server, given GetDistributionsOptions instance
+    /// Retrieve a vector of Distributions from the server, given get_distributions::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_distributions;
     ///
-    /// * `options` - `get_distributions::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindAllDistributionsRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_distributions(
+    ///     get_distributions::Option::new()
+    ///         .package_opt(Some("modelpipeline"))
+    ///         .version_opt(Some("2.3.1"))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_distributions(
         &mut self,
         options: get_distributions::Options,
     ) -> Result<Vec<FindAllDistributionsRow>, Box<dyn std::error::Error>> {
-        get_distributions::cmd(self, options).await
+        get_distributions_impl::cmd(self, options).await
     }
 
-    /// Retrieve a vector of PkgCoords from the server, given GetPkgCoordsOptions instance
+    /// Retrieve a vector of PkgCoords from the server, given get_pkgcoords::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_pkgcoords;
     ///
-    /// * `options` - `get_pkgcoords::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindAllPkgCoordsRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_pkgcoords(
+    ///     get_pkgcoords::Option::new()
+    ///         .package_opt(Some("maya"))
+    ///         .level_opt(Some("dev01"))
+    ///         .platform_opt(Some("cent7_64"))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_pkgcoords(
         &mut self,
         options: get_pkgcoords::Options,
     ) -> Result<Vec<FindAllPkgCoordsRow>, Box<dyn std::error::Error>> {
-        get_pkgcoords::cmd(self, options).await
+        get_pkgcoords_impl::cmd(self, options).await
     }
 
-    /// Retrieve a vector of withs from the server, given GetWithsOptions instance
+    /// Retrieve a vector of withs from the server, given get_withs::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_withs;
     ///
-    /// * `options` - `get_withs::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindWithsRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_withs(
+    ///     get_withs::Option::new()
+    ///     .package_opt(Some("maya%"))
+    ///         .level_opt(Some("dev01"))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_withs(
         &mut self,
         options: get_withs::Options,
     ) -> Result<Vec<FindWithsRow>, Box<dyn std::error::Error>> {
-        get_withs::cmd(self, options).await
+        get_withs_impl::cmd(self, options).await
     }
 
-    /// Retrieve a vector of Revisions from the server, given GetRevisionsOptions instance
+    /// Retrieve a vector of Revisions from the server, given get_revisions::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_revisions;
     ///
-    /// * `options` - `get_withs::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindAllRevisionsRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_revisions(
+    ///     get_revisions::Option::new()
+    ///         .transaction_id_opt(Some(15332))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_revisions(
         &mut self,
         options: get_revisions::Options,
     ) -> Result<Vec<FindAllRevisionsRow>, Box<dyn std::error::Error>> {
-        get_revisions::cmd(self, options).await
+        get_revisions_impl::cmd(self, options).await
     }
 
-    /// Retrieve a vector of Changes from the server, given GetChangesOptions instance
+    /// Retrieve a vector of Changes from the server, given get_changes::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::get_changes;
     ///
-    /// * `options` - `get_changes::Options` instance, encapsulating the query parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `Vec<FindAllChangesRow>`
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.get_changes(
+    ///     get_changes::Option::new()
+    ///         .transaction_id_opt(Some(54321))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_changes(
         &mut self,
         options: get_changes::Options,
     ) -> Result<Vec<FindAllChangesRow>, Box<dyn std::error::Error>> {
-        get_changes::cmd(self, options).await
+        get_changes_impl::cmd(self, options).await
     }
 
     //-----------------------------
     //            ADD
-
-    /// Add a Package whose parameters are defined by the AddPackagesOptions instance
+    //-----------------------------
+    /// Add a Package whose parameters are defined by the add_packages::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::add_packages;
     ///
-    /// * `options` - `add_packages::Options` instance, encapsulating the creation parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `u64` count of number of created instances
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.add_packages(
+    ///     add_packages::Option::new(vec!["maya", "nuke"], "jgerber")
+    ///         .comment_opt(Some("adding maya nad nuke as packages")))
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn add_packages(
         &mut self,
         options: add_packages::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        add_packages::cmd(self, options).await
+        add_packages_impl::cmd(self, options).await
     }
 
-    /// Add one or more `Level`s whose parameters are defined by the AddLevelsOptions instance
+    /// Add one or more `Level`s whose parameters are defined by the add_levels::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::add_levels;
     ///
-    /// * `options` - `add_levels::Options` instance, encapsulating the creation parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `u64` count of number of created instances
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.add_levels(
+    ///     add_levels::Option::new(vec!["dev01", "dev02"], "jgerber")
+    ///         .comment_opt(Some("adding levels")))
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn add_levels(
         &mut self,
         options: add_levels::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        add_levels::cmd(self, options).await
+        add_levels_impl::cmd(self, options).await
     }
 
-    /// Add one or more `Role`s whose parameters are defined by the AddRolesOptions instance
+    /// Add one or more `Role`s whose parameters are defined by the add_roles::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::add_roles;
     ///
-    /// * `options` - `add_roles::Options` instance, encapsulating the creation parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `u64` count of number of created instances
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.add_roles(
+    ///     add_roles::Option::new(vec!["model", "anim"], "jgerber")
+    ///         .comment_opt(Some("adding model and anim roles")))
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn add_roles(
         &mut self,
         options: add_roles::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        add_roles::cmd(self, options).await
+        add_roles_impl::cmd(self, options).await
     }
 
-    /// Add one or more `Platform`s whose parameters are defined by the AddPackagesOptions instance
+    /// Add one or more`Platform`s whose parameters are defined by the add_platforms::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::add_packages;
     ///
-    /// * `options` - `add_packages::Options` instance, encapsulating the creation parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `u64` count of number of created instances
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.add_platforms(
+    ///     add_platforms::Option::new(vec!["cent6_64", "cent7_64"], "jgerber")
+    ///         .comment_opt(Some("adding platforms")))
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn add_platforms(
         &mut self,
         options: add_platforms::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        add_platforms::cmd(self, options).await
+        add_platforms_impl::cmd(self, options).await
     }
 
-    /// Add one or more Sites whose parameters are defined by the AddSitesOptions instance
+    /// Add one or more Sites whose parameters are defined by the add_sites::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::add_packages;
     ///
-    /// * `options` - `add_sites::Options` instance, encapsulating the creation parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `u64` count of number of created instances
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.add_sites(
+    ///     add_sites::Option::new(vec!["portland", "montreal"], "jgerber")
+    ///         .comment_opt(Some("adding sites")))
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn add_sites(
         &mut self,
         options: add_sites::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        add_sites::cmd(self, options).await
+        add_sites_impl::cmd(self, options).await
     }
 
-    /// Add one or more Withs whose parameters are defined by the AddWithsOptions instance
+    /// Add one or more Withs whose parameters are defined by the add_withs::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::add_withs;
     ///
-    /// * `options` - `add_withs::Options` instance, encapsulating the creation parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `u64` count of number of created instances
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.add_withs(
+    ///     add_withs::Option::new(23456, vec!["portland", "montreal"], "jgerber")
+    ///         .comment_opt(Some("adding withs")))
+    ///     .await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn add_withs(
         &mut self,
         options: add_withs::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        add_withs::cmd(self, options).await
+        add_withs_impl::cmd(self, options).await
     }
 
-    /// Add one or more VersionPins whose parameters are defined by the AddVersionPinsOptions instance
+    /// Add one or more VersionPins whose parameters are defined by the add_versionpins::Options instance
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::add_versionpins;
     ///
-    /// * `options` - `add_versionpins::Options` instance, encapsulating the creation parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `u64` count of number of created instances
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.add_versionpins(
+    ///     add_versionpins::Option::new("modelpipeline-3.2.1", "jgerber")
+    ///         .levels(vec!["dev01","plasma"])
+    ///         .roles(vec!["model_beta", "model_alpha"])
+    ///         .platforms(vec!["cent7_64"])
+    ///         .sites(vec!["portland", "hyderabad", "montreal"])
+    ///         .comment_opt(Some("adding versionpin"))
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn add_versionpins(
         &mut self,
         options: add_versionpins::Options,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        add_versionpins::cmd(self, options).await
+        add_versionpins_impl::cmd(self, options).await
     }
 
     //--------------------------------
-    // export
-
+    //            export
+    //--------------------------------
     /// Export a packages.xml to the supplied location for the given show
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::export_packagesxml;
     ///
-    /// * `options` - `export_packagesxml::Options` instance, encapsulating the creation parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `u64` count of number of created instances
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.export_packagesxml(
+    ///         export_packagesxml::Option::new("dev01", "/tmp/packages.xml")
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn export_packagesxml(
         &mut self,
         options: export_packagesxml::Options,
     ) -> Result<bool, Box<dyn std::error::Error>> {
-        export_packagesxml::cmd(self, options).await
+        export_packagesxml_impl::cmd(self, options).await
     }
 
     //---------------------------------
-    // set
-
-    /// update the supplied versionppin or pins with new state defined in the setPversionpins::Options
+    //              set
+    //---------------------------------
+    //
+    /// update the supplied versionppin or pins with new state defined in the set_versionpins::Options
     ///
-    /// # Arguments
+    /// # Example
+    /// ```
+    /// # async fn dox() -> std::io::Result<()> {
+    /// use packybara::ClientService;
+    /// use packybara::set_versionpins;
     ///
-    /// * `options` - `set_versionpins::Options` instance, encapsulating the creation parameters
-    ///   
-    /// # Returns
-    ///
-    /// * Result
-    /// - Ok - `bool` indicating success
-    /// - Err - `Boxed std::error::Error`
+    /// let client = ClientService::new().await?;
+    /// let results = client.set_versionpins(
+    ///         set_versionpins::Option::new(
+    ///             vec![1234],
+    ///             vec![3211],
+    ///             "jgerber",
+    ///             "updating vpins")
+    ///     ).await?;
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn set_versionpins(
         &mut self,
         options: set_versionpins::Options,
     ) -> Result<bool, Box<dyn std::error::Error>> {
-        set_versionpins::cmd(self, options).await
+        set_versionpins_impl::cmd(self, options).await
     }
 }
